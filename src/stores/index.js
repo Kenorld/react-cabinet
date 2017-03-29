@@ -4,8 +4,10 @@ const allStores = { notificationStore }
 export const getStore = function (name) {
   return allStores[name + 'Store']
 }
-export const addStores = function(stores){
+export function addStores(stores){
   Object.assign(allStores, stores)
 }
 
-export default stores
+export factory from './factory'
+
+export default allStores

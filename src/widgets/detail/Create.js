@@ -1,32 +1,43 @@
 import React, { Component, PropTypes } from 'react';
+import mobx, { observable } from "mobx"
+import { observer } from 'mobx-react'
 import { Card, CardTitle } from 'material-ui/Card';
 import inflection from 'inflection';
 import Title from '../layout/Title';
 import DefaultActions from './CreateActions';
 
 class Create extends Component {
+    @observable record = {}
+
     handleSubmit = (record) => {
         const store = getStore(this.props.entityName)
-        store.create(record).then((data)=>{
+        store.create(record).then((data) => {
 
         })
     };
 
+    componentDidMount() {
+        this.record = this.props.record
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.record !== this.props.record) {
+            this.record = this.props.record
+        }
+    }
     render() {
-        const { actions = <DefaultActions />, children, isLoading, entityName, title } = this.props;
-        const basePath = this.getBasePath();
+        const { actions = <DefaultActions />, children, entityName, title } = this.props;
         return (
-            <Card style={{ margin: '2em', opacity: isLoading ? 0.8 : 1 }}>
+            <Card style={{ margin: '2em' }}>
                 {actions && React.cloneElement(actions, {
-                    basePath,
                     entityName,
+                    record: this.record,
                 })}
                 <CardTitle title={<Title title={title} defaultTitle={`Create ${inflection.humanize(inflection.singularize(entityName))}`} />} />
                 {React.cloneElement(children, {
                     onSubmit: this.handleSubmit,
                     entityName,
-                    basePath,
-                    record: {},
+                    record: this.record,
                 })}
             </Card>
         );
@@ -36,16 +47,13 @@ class Create extends Component {
 Create.propTypes = {
     actions: PropTypes.element,
     children: PropTypes.element,
-    crudCreate: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool.isRequired,
-    location: PropTypes.object.isRequired,
-    params: PropTypes.object.isRequired,
     entityName: PropTypes.string.isRequired,
     title: PropTypes.any,
+    record: PropTypes.object.isRequired,
 };
 
 Create.defaultProps = {
-    data: {},
+    record: {},
 };
 
 export default Create;

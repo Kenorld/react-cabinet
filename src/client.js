@@ -1,5 +1,4 @@
-import authStore from './stores/auth'
-
+let token = ''
 function toQueryString(obj) {
     var parts = [];
     for (var i in obj) {
@@ -23,7 +22,6 @@ const clientFetch = (url, method, data) => {
   if (method === 'POST' || method === 'PUT' || method === 'PATCH'){
     headers.append('Content-Type', 'application/json')
   }
-  const token = authStore.token
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
@@ -72,5 +70,8 @@ export default {
   get: clientGet,
   fetch: clientFetch,
   patch: clientPatch,
-  delete: clientDelete
+  delete: clientDelete,
+  setToken: function(newToken){
+    token = newToken
+  }
 }
