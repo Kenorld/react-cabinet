@@ -1,6 +1,5 @@
 {
   "name": "react-cabinet",
-  "private": true,
   "version": "0.0.4",
   "description": "react+mobx admin panel",
   "files": [
