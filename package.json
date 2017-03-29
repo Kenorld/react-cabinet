@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.4",
   "description": "react+mobx admin panel",
-  "main": "src/index.js",
+  "main": "lib/index",
   "scripts": {
     "clean": "rimraf dist/*",
     "copy": "copyfiles -f ./src/index.html ./dist && copyfiles -u 1 \"./src/static/**\" ./dist",
