@@ -6,11 +6,17 @@ import debounce from 'lodash.debounce';
 import Title from '../layout/Title';
 import DefaultPagination from './Pagination';
 import DefaultActions from './Actions';
-import stores, { getStore} from '../../stores'
+import stores, { getStore } from '../../stores'
 import { appendQueryToURL } from '../../url'
 
 const { queryStore } = stores
-
+const emptyQuery = {
+    limit: 30,
+    skip: 0,
+    sort: '',
+    search: '',
+    filter: {},
+}
 @observer
 export class List extends Component {
     static contextTypes = {
@@ -22,41 +28,49 @@ export class List extends Component {
         }).isRequired
     }
 
-    query = {
-        limit: 30,
-        skip: 0,
-        sort: '',
-        search: '',
-        filter: {},
-    }
     @observable totalCount = 0
     @observable records = []
     @observable isLoading = true
+    query = { ...emptyQuery }
+    currentHref
     constructor(props) {
         super(props);
         this.state = {}
-        Object.assign(this.query, this.props.query)
-        if (this.props.urlBinded) {
+        this.debouncedLoadData = debounce(this.loadData, 300)
+    }
+
+    updateQuery(props) {
+        this.query = { ...emptyQuery }
+        const newQuery = props.query || {}
+        for (const i in this.query) {
+            if (newQuery[i] != null) {
+                this.query[i] = newQuery[i]
+            }
+        }
+        if (props.urlBinded && this.currentHref != location.href) {
             const params = new URL(location.href).searchParams
             for (const i in this.query) {
                 if (params.has(i)) {
-                    if (typeof this.query[i] === 'string') {
+                    if (typeof emptyQuery[i] === 'string') {
                         this.query[i] = params.get(i)
                     } else {
                         this.query[i] = JSON.parse(params.get(i))
                     }
                 }
             }
+            this.currentHref = location.href
         }
-        this.debouncedloadData = debounce(this.loadData, 300)
     }
-
     componentDidMount() {
         this.loadData();
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.entityName !== nextProps.entityName) {
-            this.loadData(nextProps.entityName)
+        if (this.props.query != nextProps.query) {
+            this.loadData(nextProps);
+        } else if (this.props.entityName !== nextProps.entityName) {
+            this.loadData(nextProps)
+        } else if (nextProps.urlBinded && this.currentHref != location.href) {
+            this.debouncedLoadData(nextProps)
         }
     }
 
@@ -65,19 +79,16 @@ export class List extends Component {
         this.loadData();
     }
 
-    loadData = (entityName = this.props.entityName) => {
+    loadData = (props = this.props) => {
+        this.updateQuery(props)
         const { limit, skip, sort, filter, search } = this.query;
-        const store = getStore(entityName)
+        const store = getStore(props.entityName)
         this.isLoading = true
         store.list(limit, skip, sort, filter, search).then((data) => {
             this.records = data.records
             this.totalCount = data.total_count
             this.isLoading = false
         });
-        if (this.props.urlBinded) {
-            store.lastListUrl = appendQueryToURL(location.href, this.query)
-            this.context.router.history.push(store.lastListUrl)
-        }
     }
 
     setSort = (sort) => {
@@ -94,13 +105,19 @@ export class List extends Component {
     }
 
     handleFilterValueChange = (event, filterName, value) => {
-        if (!filterName||filterName==='_') {
+        if (!filterName || filterName === '_') {
             this.query.search = value
         } else {
             this.query.filter[filterName] = value
         }
         this.query.skip = 0
-        this.debouncedloadData()
+        if (this.props.urlBinded) {
+            const store = getStore(this.props.entityName)
+            store.lastListUrl = appendQueryToURL(location.href, this.query)
+            this.context.router.history.push(store.lastListUrl)
+        } else {
+            this.debouncedLoadData()
+        }
     }
 
     showFilter = (filterName, defaultValue) => {
@@ -117,15 +134,15 @@ export class List extends Component {
 
     render() {
         let node = null
-        if (this.isLoading){
+        if (this.isLoading) {
             node = <CardText>Loading...</CardText>
-        } else if (!this.records || this.records.length === 0){
+        } else if (!this.records || this.records.length === 0) {
             node = <CardText>No data!</CardText>
         }
         const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, title, children } = this.props
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
-        if (node == null){
+        if (node == null) {
             node = React.cloneElement(this.props.children, { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort })
         }
         return (

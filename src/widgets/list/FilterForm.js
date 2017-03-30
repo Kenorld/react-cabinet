@@ -15,7 +15,7 @@ export class FilterForm extends Component {
             .filter(filterElement =>
                 filterElement.props.alwaysOn ||
                 shownFilters[filterElement.props.source] ||
-                initialValues[filterElement.props.source]
+                initialValues && initialValues[filterElement.props.source]
             );
     }
 
@@ -71,6 +71,5 @@ FilterForm.propTypes = {
     hideFilter: PropTypes.func.isRequired,
     initialValues: PropTypes.object,
     searchValue: PropTypes.string,
-};
-
+}
 export default FilterForm;

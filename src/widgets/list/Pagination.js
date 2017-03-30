@@ -36,7 +36,7 @@ export class Pagination extends Component {
         }else if(page === nbPages - 1){
             input.push(nbPages-1)
         }
-        console.log("nbPages:", nbPages, "  currentPage:", currentPage, input)
+       // console.log("nbPages:", nbPages, "  currentPage:", currentPage, input)
         return input;
     }
 

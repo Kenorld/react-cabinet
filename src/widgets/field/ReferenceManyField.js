@@ -8,6 +8,14 @@ import DefaultPagination from '../list/Pagination';
 import stores, { getStore } from '../../stores'
 import { appendQueryToURL } from '../../url'
 
+const emptyQuery = {
+    limit: 30,
+    skip: 0,
+    sort: '',
+    search: '',
+    filter: {},
+}
+
 @observer
 export class ReferenceManyField extends Component {
     static contextTypes = {
@@ -19,40 +27,50 @@ export class ReferenceManyField extends Component {
         }).isRequired
     }
 
-    query = {
-        limit: 30,
-        skip: 0,
-        sort: '',
-        search: '',
-        filter: {},
-    }
     @observable totalCount = 0
     @observable referenceRecords = []
     isLoading = true
+    query = { ...emptyQuery }
+    currentHref
     constructor(props) {
         super(props);
         this.state = {}
+        this.debouncedLoadData = debounce(this.loadData, 300)
     }
-
-    componentDidMount() {
-        this.componentWillReceiveProps(this.props)
-    }
-    componentWillReceiveProps(nextProps) {
-        Object.assign(this.query, nextProps.query)
-        this.query.filter[nextProps.target] = nextProps.record[nextProps.source]
-        if (this.props.urlBinded) {
+    updateQuery(props) {
+        this.query = { ...emptyQuery }
+        const newQuery = props.query || {}
+        for (const i in this.query) {
+            if (newQuery[i] != null) {
+                this.query[i] = newQuery[i]
+            }
+        }
+        if (props.urlBinded && this.currentHref != location.href) {
             const params = new URL(location.href).searchParams
             for (const i in this.query) {
                 if (params.has(i)) {
-                    if (typeof this.query[i] === 'string') {
+                    if (typeof emptyQuery[i] === 'string') {
                         this.query[i] = params.get(i)
                     } else {
                         this.query[i] = JSON.parse(params.get(i))
                     }
                 }
             }
+            this.currentHref = location.href
         }
+        this.query.filter[props.target] = props.record[props.source]
+    }
+    componentDidMount() {
         this.loadData();
+    }
+    componentWillReceiveProps(nextProps) {
+        if (this.props.query != nextProps.query) {
+            this.loadData(nextProps);
+        } else if (this.props.source !== nextProps.source || this.props.target !== nextProps.target) {
+            this.loadData(nextProps);
+        } else if (nextProps.urlBinded && this.currentHref != location.href) {
+            this.debouncedLoadData(nextProps)
+        }
     }
 
     refresh = (event) => {
@@ -60,9 +78,10 @@ export class ReferenceManyField extends Component {
         this.loadData();
     }
 
-    loadData = () => {
+    loadData = (props = this.props) => {
+        this.updateQuery(props)
         const { limit, skip, sort, filter, search } = this.query;
-        const store = getStore(this.props.reference)
+        const store = getStore(props.reference)
         this.isLoading = true
         store.list(limit, skip, sort, filter, search).then((data) => {
             this.isLoading = false
@@ -99,12 +118,12 @@ export class ReferenceManyField extends Component {
                 setPageSkip: this.setPageSkip,
             })}
         </Card>
-        const empty = <Card><CardText>{(this.isLoading ? 'Loading...':'No Data!')}</CardText></Card>
-        if (this.props.addLabel){
+        const empty = <Card><CardText>{(this.isLoading ? 'Loading...' : 'No Data!')}</CardText></Card>
+        if (this.props.addLabel) {
             return <Labeled {...this.props} label={this.props.label} source={this.props.source}>
-            {(this.referenceRecords.length > 0 ? card : empty)}
+                {(this.referenceRecords.length > 0 ? card : empty)}
             </Labeled>
-        }else{
+        } else {
             return (this.referenceRecords.length > 0 ? card : empty)
         }
     }
@@ -116,7 +135,7 @@ ReferenceManyField.propTypes = {
     pagination: PropTypes.element,
     defaultSort: PropTypes.string,
     children: PropTypes.element.isRequired,
-    query: PropTypes.object,
+    query: PropTypes.object.isRequired,
     value: PropTypes.any.isRequired,
     urlBinded: PropTypes.bool,
     reference: PropTypes.string.isRequired,
@@ -127,6 +146,7 @@ ReferenceManyField.defaultProps = {
     urlBinded: false,
     value: '',
     addLabel: true,
+    query: {}
 };
 
 export default ReferenceManyField;

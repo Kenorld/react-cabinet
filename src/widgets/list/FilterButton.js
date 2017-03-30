@@ -75,4 +75,8 @@ FilterButton.propTypes = {
     showFilter: PropTypes.func.isRequired,
 };
 
+FilterButton.defaultProps = {
+    filterValues: {},
+};
+
 export default FilterButton;

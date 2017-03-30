@@ -32,7 +32,6 @@ export function getUIURL(entityName, action, id) {
 }
 export function getAPIURL(entityName, action, id) {
   const baseName = inflection.pluralize(entityName)
-  console.log(options)
   if (action === 'list' || action === 'create') {
     return joinURLPaths(options.apiRootUrl, `${baseName}`)
   }else if (action === 'delete' || action === 'update'){
