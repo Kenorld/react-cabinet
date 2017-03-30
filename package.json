@@ -1,6 +1,6 @@
 {
   "name": "react-cabinet",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "react+mobx admin panel",
   "files": [
     "*.md",
@@ -22,9 +22,9 @@
     "test:watch": "cross-env NODE_ENV=test karma start --autoWatch=true --singleRun=false --reporters=mocha,coverage",
     "example": "cd example && webpack-dev-server --hot --inline --config ./webpack.config.js"
   },
-  "repository": "",
+  "repository": "https://github.com/chrislearn/react-cabinet",
   "keywords": [],
-  "author": "Your name here",
+  "author": "Chrislearn Young <chris@acroidea.com> (http://chrislearn.im)",
   "devDependencies": {
     "aor-json-rest-client": "~2.0.0",
     "aor-rich-text-input": "~1.0.0",
@@ -88,7 +88,6 @@
     "mobx-react-form": "^1.21.0",
     "react-dom": "^15.4.2",
     "react-tap-event-plugin": "^2.0.1",
-    "url-join": "^1.1.0",
     "webpack": "^2.3.1"
   }
 }

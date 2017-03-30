@@ -1,6 +1,7 @@
 import { observable, action, computed, runInAction } from "mobx"
 import inflection from 'inflection';
 import client from '../client'
+import {getAPIURL} from '../url'
 
 function create(entityName) {
   const baseName = inflection.pluralize(entityName)
@@ -22,7 +23,8 @@ function create(entityName) {
       return record
     }
     @action list = async (limit, skip, sort, filter, search) => {
-      return await client.get(`/${baseName}`, { limit, skip, sort, filter, search }).then(action(`list ${baseName}`, (data) => {
+      console.log("====================api url:", getAPIURL(entityName, 'list'))
+      return await client.get(getAPIURL(entityName, 'list'), { limit, skip, sort, filter, search }).then(action(`list ${baseName}`, (data) => {
         data.records.forEach((record) => {
           this.merge(record)
         })
@@ -30,17 +32,17 @@ function create(entityName) {
       }))
     }
     @action create = async (data) => {
-      return await client.patch(`/${baseName}`, data).then(action(`create ${entityName}`, (data) => {
+      return await client.patch(getAPIURL(entityName, 'create'), data).then(action(`create ${entityName}`, (data) => {
         return this.merge(data)
       }))
     }
     @action update = async (id, data) => {
-      return await client.patch(`/${baseName}/${id}`, data).then(action(`update ${entityName} data`, () => {
+      return await client.patch(getAPIURL(entityName, 'update', id), data).then(action(`update ${entityName} data`, () => {
         return this.merge({ id: id, ...data })
       }))
     }
     @action delete = async (id) => {
-      return await client.delete(`/${baseName}/${id}`).then(action(`delete ${entityName} data`, (data) => {
+      return await client.delete(getAPIURL(entityName, 'delete', id)).then(action(`delete ${entityName} data`, (data) => {
         for (let i = this.records.length - 1; i >= 0; i--) {
           const record = this.records[i]
           if (record.id === id) {
@@ -60,11 +62,11 @@ function create(entityName) {
           return record
         }
       }
-      return await client.get(`/${baseName}/${id}`).then(action(`update ${entityName} data`, (data) => {
+      return await client.get(getAPIURL(entityName, 'read', id)).then(action(`read ${entityName} data`, (data) => {
         if (data.id) {
           return this.merge(data)
         } else {
-          console.log("Error get region:", `/${baseName}/${id}`, data)
+          console.log("Error get data:", `/${baseName}/${id}`, data)
           return data
         }
       }))

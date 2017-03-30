@@ -1,4 +1,7 @@
 let token = ''
+function formatURL(url){
+  return new URL(url, location.href).href
+}
 function toQueryString(obj) {
     var parts = [];
     for (var i in obj) {
@@ -14,9 +17,7 @@ function toQueryString(obj) {
     return parts.join("&");
 }
 const clientFetch = (url, method, data) => {
-  if (url.indexOf('http://') != 0 && url.indexOf('https://') != 0) {
-    url = getUrl(url)
-  }
+  url = formatURL(url)
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   if (method === 'POST' || method === 'PUT' || method === 'PATCH'){

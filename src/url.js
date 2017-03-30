@@ -1,26 +1,47 @@
 import inflection from 'inflection'
-import urljoin from 'url-join'
 
 const options = {
   'uiRootUrl': '/',
-  'apiRootUrl': 'localhost:9090/'
+  'apiRootUrl': '//localhost:9090/'
+}
+export function joinURLPaths(...args){
+  return args.reduce((result, item)=>{
+    const char0 = result[result.length - 1], char1 = item[0]
+    if (char0 === '/' && char1 === '/'){
+      return result + item.substring(1)
+    }else if (char0 === '/' || char1 === '/'){
+      return result + item
+    }else{
+      return result + '/' + item
+    }
+  })
 }
 export function getUIURL(entityName, action, id) {
   const baseName = inflection.pluralize(entityName)
   if (action === 'list') {
-    return urljoin(options.uiRootUrl, `/${baseName}`)
+    return joinURLPaths(options.uiRootUrl, `${baseName}`)
   }else if (action === 'delete'){
-    return urljoin(options.uiRootUrl, `/${baseName}/${id}/delete`)
+    return joinURLPaths(options.uiRootUrl, `${baseName}/${id}/delete`)
   }else if (action === 'create'){
-    return urljoin(options.uiRootUrl, `/${baseName}/create`)
+    return joinURLPaths(options.uiRootUrl, `${baseName}/create`)
   }
   if (id !== undefined) {
-    return urljoin(options.uiRootUrl, `/${baseName}/${id}`)
+    return joinURLPaths(options.uiRootUrl, `${baseName}/${id}`)
   }
-  return urljoin(options.uiRootUrl, `/${baseName}`)
+  return joinURLPaths(options.uiRootUrl, `${baseName}`)
 }
-export function getAPIUrl(entityName, action, id) {
-  return urljoin(options.apiRootUrl, getUIURL(entityName, action, id))
+export function getAPIURL(entityName, action, id) {
+  const baseName = inflection.pluralize(entityName)
+  console.log(options)
+  if (action === 'list' || action === 'create') {
+    return joinURLPaths(options.apiRootUrl, `${baseName}`)
+  }else if (action === 'delete' || action === 'update'){
+    return joinURLPaths(options.apiRootUrl, `${baseName}/${id}`)
+  }
+  if (id !== undefined) {
+    return joinURLPaths(options.apiRootUrl, `${baseName}/${id}`)
+  }
+  return joinURLPaths(options.apiRootUrl, `${baseName}`)
 }
 
 export function appendQueryToURL(url, query) {
