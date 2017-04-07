@@ -1,8 +1,16 @@
 import inflection from 'inflection'
 
 const options = {
-  'uiRootUrl': '/',
-  'apiRootUrl': '//localhost:9090/'
+  uiRootURL: '/',
+  apiRootURL: '//localhost:9090/',
+  loginURL: '/auth/login',
+  forbiddenURL: '/auth/forbidden',
+}
+export function getLoginURL(){
+  return joinURLPaths(options.uiRootURL, options.loginURL)
+}
+export function getForbiddenURL(){
+  return joinURLPaths(options.uiRootURL, options.forbiddenURL)
 }
 export function joinURLPaths(...args){
   return args.reduce((result, item)=>{
@@ -19,28 +27,28 @@ export function joinURLPaths(...args){
 export function getUIURL(entityName, action, id) {
   const baseName = inflection.pluralize(entityName)
   if (action === 'list') {
-    return joinURLPaths(options.uiRootUrl, `${baseName}`)
+    return joinURLPaths(options.uiRootURL, `${baseName}`)
   }else if (action === 'delete'){
-    return joinURLPaths(options.uiRootUrl, `${baseName}/${id}/delete`)
+    return joinURLPaths(options.uiRootURL, `${baseName}/${id}/delete`)
   }else if (action === 'create'){
-    return joinURLPaths(options.uiRootUrl, `${baseName}/create`)
+    return joinURLPaths(options.uiRootURL, `${baseName}/create`)
   }
   if (id !== undefined) {
-    return joinURLPaths(options.uiRootUrl, `${baseName}/${id}`)
+    return joinURLPaths(options.uiRootURL, `${baseName}/${id}`)
   }
-  return joinURLPaths(options.uiRootUrl, `${baseName}`)
+  return joinURLPaths(options.uiRootURL, `${baseName}`)
 }
 export function getAPIURL(entityName, action, id) {
   const baseName = inflection.pluralize(entityName)
   if (action === 'list' || action === 'create') {
-    return joinURLPaths(options.apiRootUrl, `${baseName}`)
+    return joinURLPaths(options.apiRootURL, `${baseName}`)
   }else if (action === 'delete' || action === 'update'){
-    return joinURLPaths(options.apiRootUrl, `${baseName}/${id}`)
+    return joinURLPaths(options.apiRootURL, `${baseName}/${id}`)
   }
   if (id !== undefined) {
-    return joinURLPaths(options.apiRootUrl, `${baseName}/${id}`)
+    return joinURLPaths(options.apiRootURL, `${baseName}/${id}`)
   }
-  return joinURLPaths(options.apiRootUrl, `${baseName}`)
+  return joinURLPaths(options.apiRootURL, `${baseName}`)
 }
 
 export function appendQueryToURL(url, query) {
