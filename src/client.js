@@ -1,4 +1,6 @@
 let token = ''
+let loginURL = null
+let forbiddenURL = null
 function formatURL(url){
   return new URL(url, location.href).href
 }
@@ -43,11 +45,9 @@ const clientFetch = (url, method, data) => {
   console.log(url, method, data)
   return fetch(url, options).then((response) => {
     if (response.status === 401){
-      routerStore.reset([{ key: 'login', index: 0, }], 'global')
-    }
-    if (response.status === 401 || response.status === 403) {
-      console.log("==================AUath error")
-      return undefined
+      location.href = loginURL
+    } else if (response.status === 403) {
+      location.href = forbiddenURL
     }
     return response.json()
   }).catch((e) => {
@@ -74,5 +74,11 @@ export default {
   delete: clientDelete,
   setToken: function(newToken){
     token = newToken
+  },
+  setLoginURL: function(url){
+    loginURL = url
+  },
+  setForbiddenURL: function(url){
+    forbiddenURL = url
   }
 }
