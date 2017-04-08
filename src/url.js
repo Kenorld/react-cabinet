@@ -7,10 +7,10 @@ const options = {
   forbiddenURL: '/auth/forbidden',
 }
 export function getLoginURL(){
-  return joinURLPaths(options.uiRootURL, options.loginURL)
+  return joinURLPaths(options.apiRootURL, options.loginURL)
 }
 export function getForbiddenURL(){
-  return joinURLPaths(options.uiRootURL, options.forbiddenURL)
+  return joinURLPaths(options.apiRootURL, options.forbiddenURL)
 }
 export function joinURLPaths(...args){
   return args.reduce((result, item)=>{
