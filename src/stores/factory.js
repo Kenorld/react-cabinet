@@ -25,7 +25,7 @@ function create(entityName) {
     @action list = async (limit, skip, sort, filter, search) => {
       console.log("====================api url:", getAPIURL(entityName, 'list'))
       return await client.get(getAPIURL(entityName, 'list'), { limit, skip, sort, filter, search }).then(action(`list ${baseName}`, (data) => {
-        data.records.forEach((record) => {
+        data.records && data.records.forEach((record) => {
           this.merge(record)
         })
         return data
