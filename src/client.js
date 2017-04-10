@@ -25,7 +25,6 @@ const clientFetch = (url, method, data) => {
   if (method === 'POST' || method === 'PUT' || method === 'PATCH'){
     headers.append('Content-Type', 'application/json')
   }
-  console.log("token:", token)
   if (token) {
     headers.append('Authorization', `Bearer ${token}`)
   }
