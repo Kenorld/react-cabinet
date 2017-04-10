@@ -3,14 +3,18 @@ import inflection from 'inflection'
 const options = {
   uiRootURL: '/',
   apiRootURL: '//localhost:9090/',
-  loginURL: '/auth/login',
-  forbiddenURL: '/auth/forbidden',
+  uiLoginURL: '/auth/login',
+  apiLoginURL: '/auth/login',
+  uiForbiddenURL: '/auth/forbidden',
 }
-export function getLoginURL(){
-  return joinURLPaths(options.apiRootURL, options.loginURL)
+export function getAPILoginURL(){
+  return joinURLPaths(options.apiRootURL, options.apiLoginURL)
 }
-export function getForbiddenURL(){
-  return joinURLPaths(options.apiRootURL, options.forbiddenURL)
+export function getUILoginURL(){
+  return joinURLPaths(options.uiRootURL, options.uiLoginURL)
+}
+export function getUIForbiddenURL(){
+  return joinURLPaths(options.apiRootURL, options.uiForbiddenURL)
 }
 export function joinURLPaths(...args){
   return args.reduce((result, item)=>{

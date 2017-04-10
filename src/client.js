@@ -1,4 +1,4 @@
-import {getLoginURL, getForbiddenURL} from  './url'
+import {getUILoginURL, getUIForbiddenURL} from  './url'
 
 let token = ''
 function formatURL(url){
@@ -45,9 +45,9 @@ const clientFetch = (url, method, data) => {
   console.log(url, method, data)
   return fetch(url, options).then((response) => {
     if (response.status === 401){
-      location.href = getLoginURL()
+      location.href = getUILoginURL()
     } else if (response.status === 403) {
-      location.href = getForbiddenURL()
+      location.href = getUIForbiddenURL()
     }
     return response.json()
   }).catch((e) => {
