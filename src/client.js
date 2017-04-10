@@ -25,8 +25,9 @@ const clientFetch = (url, method, data) => {
   if (method === 'POST' || method === 'PUT' || method === 'PATCH'){
     headers.append('Content-Type', 'application/json')
   }
+  console.log("token:", token)
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`
+    headers.append('Authorization', `Bearer ${token}`)
   }
   //Authorization Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXJlbnQiOiI1OGFiZTA4ZGJkZGE5OWY4ZDA0YTc5M2YiLCJyb2xlIjoicGFyZW50IiwidXNlciI6IjU4YWJlMDhkNTcwYTk2YzA2Y2Q5OWJmMiJ9.LdrIfkJOeA7JCAlutgX3qlaEwl2VfmI14OGEt2wQ8BQ
   let options = { method, headers };
@@ -73,6 +74,7 @@ export default {
   patch: clientPatch,
   delete: clientDelete,
   setToken: function(newToken){
+    console.log("new token:", newToken)
     token = newToken
   }
 }
