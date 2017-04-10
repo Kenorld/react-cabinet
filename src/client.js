@@ -45,9 +45,9 @@ const clientFetch = (url, method, data) => {
   console.log(url, method, data)
   return fetch(url, options).then((response) => {
     if (response.status === 401){
-      location.href = getUILoginURL()
+      location.href = getUILoginURL(window.location.href)
     } else if (response.status === 403) {
-      location.href = getUIForbiddenURL()
+      location.href = getUIForbiddenURL(window.location.href)
     }
     return response.json()
   }).catch((e) => {

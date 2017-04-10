@@ -4,17 +4,18 @@ const options = {
   uiRootURL: '/',
   apiRootURL: '//localhost:9090/',
   uiLoginURL: '/auth/login',
+  orignParamName: 'origin',
   apiLoginURL: '/auth/login',
   uiForbiddenURL: '/auth/forbidden',
 }
 export function getAPILoginURL(){
   return joinURLPaths(options.apiRootURL, options.apiLoginURL)
 }
-export function getUILoginURL(){
-  return joinURLPaths(options.uiRootURL, options.uiLoginURL)
+export function getUILoginURL(orignURL){
+  return joinURLPaths(options.uiRootURL, options.uiLoginURL, `?${options.orignParamName}=${decodeURIComponent(orignURL)}`)
 }
 export function getUIForbiddenURL(){
-  return joinURLPaths(options.apiRootURL, options.uiForbiddenURL)
+  return joinURLPaths(options.apiRootURL, options.uiForbiddenURL, `?${options.orignParamName}=${decodeURIComponent(orignURL)}`)
 }
 export function joinURLPaths(...args){
   return args.reduce((result, item)=>{
