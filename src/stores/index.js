@@ -2,9 +2,13 @@ import notificationStore from './notification'
 
 const allStores = { notificationStore }
 export const getStore = function (name) {
-  return allStores[name + 'Store']
+  let store = allStores
+  name.split('/').forEach((part)=>{
+    store = store[part]
+  })
+  return store
 }
-export function addStores(stores){
+export function concatStores(stores){
   Object.assign(allStores, stores)
 }
 
