@@ -8,8 +8,6 @@ import DefaultActions from './EditActions';
 import stores, { getStore } from '../../stores'
 import { getUIURL } from '../../url'
 
-const { notificationStore } = stores
-
 @observer
 export class Edit extends Component {
     static contextTypes = {
@@ -60,7 +58,7 @@ export class Edit extends Component {
             } else {
                 this.context.router.history.push(getUIURL(this.props.entityName, 'list'))
             }
-            notificationStore.notify('Record updated!')
+            stores.notification.notify('Record updated!')
         })
     }
 

@@ -3,8 +3,6 @@ import { observer } from 'mobx-react'
 import Snackbar from 'material-ui/Snackbar';
 import stores from '../../stores'
 
-const { notificationStore } = stores
-
 function getStyles(context) {
     if (!context) return { primary1Color: '#00bcd4', accent1Color: '#ff4081' };
     const {
@@ -23,21 +21,21 @@ function getStyles(context) {
 @observer
 class Notification extends React.Component {
     handleRequestClose = () => {
-        notificationStore.hideNotification();
+        stores.notification.hideNotification();
     };
 
     render() {
         const style = {};
         const { primary1Color, accent1Color } = getStyles(this.context);
-        if (notificationStore.type === 'warning') {
+        if (stores.notification.type === 'warning') {
             style.backgroundColor = accent1Color;
         }
-        if (notificationStore.type === 'confirm') {
+        if (stores.notification.type === 'confirm') {
             style.backgroundColor = primary1Color;
         }
         return (<Snackbar
-            open={!!notificationStore.message}
-            message={notificationStore.message}
+            open={!!stores.notification.message}
+            message={stores.notification.message}
             autoHideDuration={4000}
             onRequestClose={this.handleRequestClose}
             bodyStyle={style}
