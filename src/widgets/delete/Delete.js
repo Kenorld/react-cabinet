@@ -74,7 +74,6 @@ class Delete extends Component {
         if (!this.record || !this.record.id){
             return (<Card style={{ margin: '2em' }}><CardText>No data!</CardText></Card>)
         }
-        console.log("===========", entityName)
         const { title, entityName } = this.props;
         return (
             <Card style={{ margin: '2em' }}>

@@ -6,7 +6,7 @@ export const getStore = function (name) {
   name.split('/').forEach((part)=>{
     store = store[part]
     if (store == null){
-      throw new Error("Not found store, name:", name, "  part:", part)
+      throw new Error(`Not found store, name: ${name}  part: ${part}`)
     }
   })
   return store
