@@ -8,8 +8,6 @@ import ActionDelete from 'material-ui/svg-icons/action/delete'
 import stores, { getStore } from '../../stores'
 import { getUIURL } from '../../url'
 
-const {notificationStore} = stores
-
 @observer
 class DeleteButton extends React.Component {
     @observable dialogOpened = false
@@ -29,7 +27,7 @@ class DeleteButton extends React.Component {
             } else {
                 this.context.router.history.push(getUIURL(this.props.entityName, 'list'))
             }
-            notificationStore.notify('Record deleted!')
+            stores.notification.notify('Record deleted!')
         })
     }
     render() {

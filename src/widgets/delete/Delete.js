@@ -12,8 +12,6 @@ import { ListButton } from '../button';
 import stores, { getStore } from '../../stores'
 import { getUIURL } from '../../url'
 
-const { notificationStore } = stores
-
 @observer
 class Delete extends Component {
     static contextTypes = {
@@ -65,7 +63,7 @@ class Delete extends Component {
             } else {
                 this.context.router.history.push(getUIURL(this.props.entityName, 'list'))
             }
-            notificationStore.notify('Record deleted!')
+            stores.notification.notify('Record deleted!')
         })
     }
 
