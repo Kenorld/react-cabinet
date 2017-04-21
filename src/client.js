@@ -73,7 +73,6 @@ export default {
   patch: clientPatch,
   delete: clientDelete,
   setToken: function(newToken){
-    console.log("new token:", newToken)
     token = newToken
   }
 }
