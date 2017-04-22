@@ -58,7 +58,7 @@ export class ReferenceManyField extends Component {
             }
             this.currentHref = location.href
         }
-        this.query.filter[props.target] = props.record[props.source]
+        this.query.filter[props.target] = get(props.record, props.source)
     }
     componentDidMount() {
         this.loadData();

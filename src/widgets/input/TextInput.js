@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import get from 'lodash.get'
+import set from 'lodash.set'
 import { observable } from "mobx"
 import { observer } from 'mobx-react'
 import TextField from 'material-ui/TextField';
@@ -75,11 +77,11 @@ TextInput.defaultProps = {
     disabled: false,
     type: 'text',
     fetchValue: function (element) {
-        const value = element.record[element.props.source]
+        const value = get(element.record, element.props.source)
         return value === undefined ? "" : value
     },
     writeValue: function (element, value) {
-        element.record[element.props.source] = value
+        set(element.record, element.props.source, value)
     }
 };
 

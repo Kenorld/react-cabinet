@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import get from 'lodash.get';
+import set from 'lodash.set';
 import { Link } from 'react-router-dom';
 import { observable } from "mobx"
 import { observer } from 'mobx-react'
 import LinearProgress from 'material-ui/LinearProgress';
-import get from 'lodash.get';
 import { getUIURL } from '../../url'
 import { getStore } from '../../stores'
 
@@ -18,7 +19,7 @@ export class ReferenceField extends Component {
     @observable referenceRecord
     @observable isLoading = true
     loadData(reference = this.props.reference, record = this.props.record, source = this.props.source) {
-        const value = this.props.record[this.props.source]
+        const value = get(this.props.record, this.props.source)
         if (value !== "" && value != null) {
             this.isLoading = true
             const store = getStore(this.props.reference)

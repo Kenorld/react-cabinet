@@ -1,8 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'
+import get from 'lodash.get'
+import set from 'lodash.set'
 import { observable } from "mobx"
 import { observer } from 'mobx-react'
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
 
 /**
  * An Input component for a select box, using an array of objects for the options
@@ -111,11 +113,11 @@ SelectInput.defaultProps = {
     choices: [],
     options: {},
     fetchValue: function(element){
-        const value = element.record[element.props.source]
+        const value = get(element.record, element.props.source)
         return value === undefined ? "" : value
     },
     writeValue: function(element, value){
-        element.record[element.props.source] = value
+        set(element.record, element.props.source, value)
     }
 };
 
