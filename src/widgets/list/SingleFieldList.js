@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import get from 'lodash.get'
 
 /**
  * Iterator component to be used to display a list of records, using a single field
@@ -15,7 +16,7 @@ const SingleFieldList = ({ ids, data, entityName, basePath, children }) => (
         {ids.map(id =>
             React.cloneElement(children, {
                 key: id,
-                record: data[id],
+                record: get(data,id),
                 entityName,
                 basePath,
             })
