@@ -7,6 +7,7 @@ import Labeled from '../input/Labeled';
 import DefaultPagination from '../list/Pagination';
 import stores, { getStore } from '../../stores'
 import { appendQueryToURL } from '../../url'
+import get from 'lodash.get';
 
 const emptyQuery = {
     limit: 30,
