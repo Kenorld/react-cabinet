@@ -5,8 +5,7 @@
   ],
   "plugins": [
     "transform-decorators-legacy",
-    "transform-object-rest-spread",
-    "react-hot-loader/babel"
+    "transform-object-rest-spread"
   ],
   "env": {
     "test": {
