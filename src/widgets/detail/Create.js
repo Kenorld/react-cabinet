@@ -10,9 +10,14 @@ class Create extends Component {
     @observable record = {}
 
     handleSubmit = (record) => {
+        if (this.props.beforeSubmit){
+            this.props.beforeSubmit(this.props)
+        }
         const store = getStore(this.props.entityName)
         store.create(record).then((data) => {
-
+            if (this.props.afterSubmit){
+                this.props.afterSubmit(this.props)
+            }
         })
     };
 
@@ -50,6 +55,8 @@ Create.propTypes = {
     entityName: PropTypes.string.isRequired,
     title: PropTypes.any,
     record: PropTypes.object.isRequired,
+    beforeSubmit: PropTypes.func,
+    afterSubmit: PropTypes.func,
 };
 
 Create.defaultProps = {

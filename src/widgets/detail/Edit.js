@@ -51,12 +51,18 @@ export class Edit extends Component {
     }
 
     handleSubmit = (record) => {
+        if (this.props.beforeSubmit){
+            this.props.beforeSubmit(this.props)
+        }
         const store = getStore(this.props.entityName)
         store.update(record.id, mobx.toJS(record)).then((data)=>{
             if (store.lastListUrl) {
                 this.context.router.history.push(store.lastListUrl)
             } else {
                 this.context.router.history.push(getUIURL(this.props.entityName, 'list'))
+            }
+            if (this.props.afterSubmit){
+                this.props.afterSubmit(this.props)
             }
             stores.notification.notify('Record updated!')
         })
@@ -98,6 +104,8 @@ Edit.propTypes = {
     recordId: PropTypes.string.isRequired,
     entityName: PropTypes.string.isRequired,
     title: PropTypes.any,
+    beforeSubmit: PropTypes.func,
+    afterSubmit: PropTypes.func,
 };
 
 
