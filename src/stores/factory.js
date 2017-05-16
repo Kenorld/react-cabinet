@@ -31,7 +31,7 @@ function create(entityName) {
       }))
     }
     @action create = async (data) => {
-      return await client.patch(getAPIURL(entityName, 'create'), data).then(action(`create ${entityName}`, (data) => {
+      return await client.post(getAPIURL(entityName, 'create'), data).then(action(`create ${entityName}`, (data) => {
         return this.merge(data)
       }))
     }

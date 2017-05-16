@@ -22,7 +22,7 @@ export default class SimpleForm extends React.Component {
         }
     }
     render() {
-        let { children, onSubmit, invalid, form, fields, plugins } = this.props
+        let { children, onSubmit, invalid, form, fields, showToolbar, plugins } = this.props
         const submitHandler = (e) => {
             if (onSubmit) {
                 onSubmit(this.record)
@@ -48,7 +48,7 @@ export default class SimpleForm extends React.Component {
                     </div>
                 ))}
             </div>
-            <Toolbar invalid={invalid} />
+            {showToolbar && <Toolbar invalid={invalid} />}
         </form>
     }
 }
