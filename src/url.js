@@ -47,13 +47,13 @@ export function getAPIURL(entityName, action, id) {
   const baseName = inflection.pluralize(entityName)
   if (action === 'list' || action === 'create') {
     return joinURLPaths(options.apiRootURL, `${baseName}`)
-  }else if (action === 'delete' || action === 'update'){
+  }else if (action === 'delete' || action === 'update' || action === 'read'){
     return joinURLPaths(options.apiRootURL, `${baseName}/${id}`)
   }
   if (id !== undefined) {
-    return joinURLPaths(options.apiRootURL, `${baseName}/${id}`)
+    return joinURLPaths(options.apiRootURL, `${baseName}/${id}/${action}`)
   }
-  return joinURLPaths(options.apiRootURL, `${baseName}`)
+  return joinURLPaths(options.apiRootURL, `${baseName}/${action}`)
 }
 
 export function appendQueryToURL(url, query) {
