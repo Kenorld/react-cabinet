@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {PropTypes as MobxTypes} from 'mobx-react'
+import { observer } from 'mobx-react'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import DataGridCell from './DataGridCell';
 import DataGridHeaderCell from './DataGridHeaderCell';
@@ -73,6 +74,7 @@ const defaultStyles = {
  *     </DataGrid>
  * </ReferenceManyField>
  */
+@observer
 class DataGrid extends Component {
     updateSort = (event) => {
         event.stopPropagation();
