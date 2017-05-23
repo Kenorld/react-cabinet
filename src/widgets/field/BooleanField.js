@@ -1,20 +1,25 @@
 import React, { PropTypes } from 'react';
+import { observer } from 'mobx-react'
 import get from 'lodash.get';
 
 import FalseIcon from 'material-ui/svg-icons/content/clear';
 import TrueIcon from 'material-ui/svg-icons/action/done';
 
-const BooleanField = ({ source, record = {}, elStyle }) => {
-    if (get(record, source) === false) {
-        return <FalseIcon style={elStyle} />;
-    }
+@observer
+class BooleanField extends React.Component {
+    render() {
+        let { source, record = {}, elStyle } = this.propTypes
+        if (get(record, source) === false) {
+            return <FalseIcon style={elStyle} />;
+        }
 
-    if (get(record, source) === true) {
-        return <TrueIcon style={elStyle} />;
-    }
+        if (get(record, source) === true) {
+            return <TrueIcon style={elStyle} />;
+        }
 
-    return <span style={elStyle} />;
-};
+        return <span style={elStyle} />;
+    }
+}
 
 BooleanField.propTypes = {
     addLabel: PropTypes.bool,

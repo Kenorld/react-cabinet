@@ -1,4 +1,4 @@
-import { observable, action, computed, runInAction } from "mobx"
+import { observable, action, computed, runInAction,extendObservable } from "mobx"
 import inflection from 'inflection';
 import client from '../client'
 import {getAPIURL} from '../url'
@@ -16,11 +16,11 @@ function create(entityName) {
     @action merge(record) {
       const exist = this.find(record.id)
       if (exist) {
-        record = Object.assign(exist, record)
+        return extendObservable(exist, record)
       } else {
-        this.records.push(record)
+        const len = this.records.push(record)
+        return this.records[len - 1]
       }
-      return record
     }
     @action list = async (limit, skip, sort, filter, search) => {
       return await client.get(getAPIURL(entityName, 'list'), { limit, skip, sort, filter, search }).then(action(`list ${baseName}`, (data) => {
@@ -30,14 +30,14 @@ function create(entityName) {
         return data
       }))
     }
-    @action create = async (data) => {
-      return await client.post(getAPIURL(entityName, 'create'), data).then(action(`create ${entityName}`, (data) => {
-        return this.merge(data)
+    @action create = async (record) => {
+      return await client.post(getAPIURL(entityName, 'create'), record).then(action(`create ${entityName}`, (data) => {
+        return this.merge(Object.assign(record, data))
       }))
     }
-    @action update = async (id, data) => {
-      return await client.patch(getAPIURL(entityName, 'update', id), data).then(action(`update ${entityName} data`, () => {
-        return this.merge({ id: id, ...data })
+    @action update = async (id, record) => {
+      return await client.patch(getAPIURL(entityName, 'update', id), record).then(action(`update ${entityName} data`, (data) => {
+        return this.merge({ id: id, ...record, ...data })
       }))
     }
     @action delete = async (id) => {

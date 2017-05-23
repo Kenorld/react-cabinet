@@ -1,8 +1,15 @@
 import React, { PropTypes } from 'react';
-import get from 'lodash.get';
+import { observer } from 'mobx-react'
+import {getValues} from '../utils'
 
-const TextField = ({ source, record = {}, elStyle }) =>
-    <span style={elStyle}>{this.props.convert(get(record, source))}</span>;
+@observer
+class TextField extends React.Component {
+    render() {
+        const { source, record = {}, convert, elStyle } = this.props
+        return <span style={elStyle}>{convert.apply(this, getValues(record, source))}</span>;
+    }
+}
+
 
 TextField.propTypes = {
     addLabel: PropTypes.bool,
@@ -15,7 +22,7 @@ TextField.propTypes = {
 
 TextField.defaultProps = {
     addLabel: true,
-    convert: function(value){
+    convert: function (value) {
         return value
     }
 };

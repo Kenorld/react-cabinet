@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { observer } from 'mobx-react'
 import get from 'lodash.get';
 
 const hasNumberFormat = !!(typeof Intl === 'object' && Intl && typeof Intl.NumberFormat === 'function');
@@ -31,13 +32,17 @@ const hasNumberFormat = !!(typeof Intl === 'object' && Intl && typeof Intl.Numbe
  * // renders the record { id: 1234, price: 25.99 } as
  * <span>25,99 $US</span>
  */
-const NumberField = ({ record, source, locales, options, elStyle }) => {
-    if (!record) return null;
-    const value = get(record, source);
-    if (value == null) return null;
-    if (!hasNumberFormat) return <span style={elStyle}>{value}</span>;
-    return <span style={elStyle}>{value.toLocaleString(locales, options)}</span>;
-};
+@observer
+class NumberField extends React.Component {
+    render() {
+        const { record, source, locales, options, elStyle } = this.props
+        if (!record) return null;
+        const value = this.props.convert(get(record, source))
+        if (value == null) return null;
+        if (!hasNumberFormat) return <span style={elStyle}>{value}</span>;
+        return <span style={elStyle}>{value.toLocaleString(locales, options)}</span>
+    }
+}
 
 NumberField.propTypes = {
     addLabel: PropTypes.bool,
@@ -50,12 +55,16 @@ NumberField.propTypes = {
     options: PropTypes.object,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
+    convert: PropTypes.func.isRequired,
 };
 
 NumberField.defaultProps = {
     addLabel: true,
     style: { textAlign: 'right' },
     headerStyle: { textAlign: 'right' },
+    convert: function (value) {
+        return value
+    },
 };
 
 export default NumberField;

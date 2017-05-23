@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { observer } from 'mobx-react'
 import get from 'lodash.get';
 
 const toLocaleStringSupportsLocales = (() => {
@@ -35,19 +36,21 @@ const toLocaleStringSupportsLocales = (() => {
  * // renders the record { id: 1234, new Date('2012-11-07') } as
  * <span>mercredi 7 novembre 2012</span>
  */
+@observer
+class DateField extends React.Component {
+    render() {
+        let { elStyle, locales, options, record, showTime = false, source } = this.propTypes
+        if (!record) return null;
+        const value = get(record, source);
+        if (value == null) return null;
+        const date = value instanceof Date ? value : new Date(value);
+        const dateString = showTime ?
+            (toLocaleStringSupportsLocales ? date.toLocaleString(locales, options) : date.toLocaleString()) :
+            (toLocaleStringSupportsLocales ? date.toLocaleDateString(locales, options) : date.toLocaleDateString());
 
-const DateField = ({ elStyle, locales, options, record, showTime = false, source }) => {
-    if (!record) return null;
-    const value = get(record, source);
-    if (value == null) return null;
-    const date = value instanceof Date ? value : new Date(value);
-    const dateString = showTime ?
-        (toLocaleStringSupportsLocales ? date.toLocaleString(locales, options) : date.toLocaleString()) :
-        (toLocaleStringSupportsLocales ? date.toLocaleDateString(locales, options) : date.toLocaleDateString());
-
-    return <span style={elStyle}>{dateString}</span>;
-};
-
+        return <span style={elStyle}>{dateString}</span>
+    }
+}
 DateField.propTypes = {
     addLabel: PropTypes.bool,
     elStyle: PropTypes.object,
