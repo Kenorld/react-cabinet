@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import { observer } from 'mobx-react'
-import {getValues} from '../utils'
+import { getValues } from '../utils'
 
 @observer
 class LinkField extends React.Component {
     render() {
-        let { source, record = {}, elStyle, convert } = this.props
+        let { source, record = {}, elStyle, convert, target } = this.props
         const value = convert.apply(this, getValues(record, source))
-        return <a href={value.href} style={elStyle}>
+        return <a href={value.href} style={elStyle} target={target}>
             {value.text}
         </a>
     }
@@ -18,6 +18,7 @@ LinkField.propTypes = {
     elStyle: PropTypes.object,
     label: PropTypes.string,
     text: PropTypes.string,
+    target: PropTypes.string,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
     convert: PropTypes.func.isRequired,
@@ -25,8 +26,9 @@ LinkField.propTypes = {
 
 LinkField.defaultProps = {
     addLabel: true,
+    target: '_blank',
     convert: function (href) {
-        return {href: href, text: this.props.text||href}
+        return { href: href, text: this.props.text || href }
     },
 };
 
