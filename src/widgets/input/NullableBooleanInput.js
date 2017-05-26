@@ -16,7 +16,6 @@ const NullableBooleanInput = ({ input, meta: { touched, error }, label, source, 
 );
 
 NullableBooleanInput.propTypes = {
-    addField: PropTypes.bool.isRequired,
     elStyle: PropTypes.object,
     input: PropTypes.object,
     label: PropTypes.string,
@@ -25,7 +24,6 @@ NullableBooleanInput.propTypes = {
 };
 
 NullableBooleanInput.defaultProps = {
-    addField: true,
 };
 
 export default NullableBooleanInput;

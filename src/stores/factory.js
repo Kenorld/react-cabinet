@@ -24,10 +24,11 @@ function create(entityName) {
     }
     @action list = async (limit, skip, sort, filter, search) => {
       return await client.get(getAPIURL(entityName, 'list'), { limit, skip, sort, filter, search }).then(action(`list ${baseName}`, (data) => {
+        const records = []
         data.records && data.records.forEach((record) => {
-          this.merge(record)
+          records.push(this.merge(record))
         })
-        return data
+        return {records, rawData: data}
       }))
     }
     @action create = async (record) => {

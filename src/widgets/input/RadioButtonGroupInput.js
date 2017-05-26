@@ -78,7 +78,6 @@ class RadioButtonGroupInput extends Component {
 }
 
 RadioButtonGroupInput.propTypes = {
-    addField: PropTypes.bool.isRequired,
     choices: PropTypes.arrayOf(PropTypes.object),
     label: PropTypes.string,
     onChange: PropTypes.func,
@@ -94,7 +93,6 @@ RadioButtonGroupInput.propTypes = {
 };
 
 RadioButtonGroupInput.defaultProps = {
-    addField: true,
     choices: [],
     options: {},
     optionText: 'name',

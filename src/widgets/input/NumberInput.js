@@ -41,7 +41,6 @@ class NumberInput extends Component {
 }
 
 NumberInput.propTypes = {
-    addField: PropTypes.bool.isRequired,
     elStyle: PropTypes.object,
     input: PropTypes.object,
     label: PropTypes.string,
@@ -55,7 +54,6 @@ NumberInput.propTypes = {
 };
 
 NumberInput.defaultProps = {
-    addField: true,
     options: {},
     step: 'any',
 };

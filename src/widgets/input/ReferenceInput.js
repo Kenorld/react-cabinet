@@ -13,7 +13,7 @@ const noFilter = () => true;
  * to a subcomponent, to which it passes the possible choices
  * as the `choices` attribute.
  *
- * Use it with a selector component as child, like `<AutocompleteInput>`,
+ * Use it with a selector component as child, like `<AutoCompleteInput>`,
  * `<SelectInput>`, or `<RadioButtonGroupInput>`.
  *
  * @example
@@ -21,7 +21,7 @@ const noFilter = () => true;
  *     <Edit {...props}>
  *         <SimpleForm>
  *             <ReferenceInput label="Post" source="post_id" reference="posts">
- *                 <AutocompleteInput optionText="title" />
+ *                 <AutoCompleteInput optionText="title" />
  *             </ReferenceInput>
  *         </SimpleForm>
  *     </Edit>
@@ -148,7 +148,7 @@ export class ReferenceInput extends Component {
             choices: matchingReferences,
             basePath,
             onChange,
-            filter: noFilter, // for AutocompleteInput
+            filter: noFilter, // for AutoCompleteInput
             setFilter: this.debouncedSetFilter,
             setPagination: this.setPagination,
             setSort: this.setSort,
@@ -157,7 +157,6 @@ export class ReferenceInput extends Component {
 }
 
 ReferenceInput.propTypes = {
-    addField: PropTypes.bool.isRequired,
     allowEmpty: PropTypes.bool.isRequired,
     basePath: PropTypes.string,
     children: PropTypes.element.isRequired,

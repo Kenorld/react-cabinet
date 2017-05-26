@@ -1,5 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import AutoComplete from 'material-ui/AutoComplete';
+import React, { Component, PropTypes } from 'react'
+import { observable, toJS } from 'mobx'
+import { observer } from 'mobx-react'
+import AutoComplete from 'material-ui/AutoComplete'
+import { collectProps } from '../utils'
+import { getStore } from '../../stores'
 
 /**
  * An Input component for an autocomplete field, using an array of objects for the options
@@ -14,7 +18,7 @@ import AutoComplete from 'material-ui/AutoComplete';
  *    { id: 'M', name: 'Male' },
  *    { id: 'F', name: 'Female' },
  * ];
- * <AutocompleteInput source="gender" choices={choices} />
+ * <AutoCompleteInput source="gender" choices={choices} />
  *
  * You can also customize the properties to use for the option name and value,
  * thanks to the 'optionText' and 'optionValue' attributes.
@@ -23,7 +27,7 @@ import AutoComplete from 'material-ui/AutoComplete';
  *    { _id: 123, full_name: 'Leo Tolstoi', sex: 'M' },
  *    { _id: 456, full_name: 'Jane Austen', sex: 'F' },
  * ];
- * <AutocompleteInput source="author_id" choices={choices} optionText="full_name" optionValue="_id" />
+ * <AutoCompleteInput source="author_id" choices={choices} optionText="full_name" optionValue="_id" />
  *
  * `optionText` also accepts a function, so you can shape the option text at will:
  * @example
@@ -32,20 +36,20 @@ import AutoComplete from 'material-ui/AutoComplete';
  *    { id: 456, first_name: 'Jane', last_name: 'Austen' },
  * ];
  * const optionRenderer = choice => `${choice.first_name} ${choice.last_name}`;
- * <AutocompleteInput source="author_id" choices={choices} optionText={optionRenderer} />
+ * <AutoCompleteInput source="author_id" choices={choices} optionText={optionRenderer} />
  *
  * You can customize the `filter` function used to filter the results.
  * By default, it's `AutoComplete.fuzzyFilter`, but you can use any of
  * the functions provided by `AutoComplete`, or a function of your own
  * @see http://www.material-ui.com/#/components/auto-complete
  * @example
- * import { Edit, SimpleForm, AutocompleteInput } from 'react-cabinet/components';
+ * import { Edit, SimpleForm, AutoCompleteInput } from 'react-cabinet/components';
  * import AutoComplete from 'material-ui/AutoComplete';
  *
  * export const PostEdit = (props) => (
  *     <Edit {...props}>
  *         <SimpleForm>
- *             <AutocompleteInput source="category" filter={AutoComplete.caseInsensitiveFilter} choices={choices} />
+ *             <AutoCompleteInput source="category" filter={AutoComplete.caseInsensitiveFilter} choices={choices} />
  *         </SimpleForm>
  *     </Edit>
  * );
@@ -53,68 +57,77 @@ import AutoComplete from 'material-ui/AutoComplete';
  * The object passed as `options` props is passed to the material-ui <AutoComplete> component
  *
  * @example
- * <AutocompleteInput source="author_id" options={{ fullWidth: true }} />
+ * <AutoCompleteInput source="author_id" options={{ fullWidth: true }} />
  */
-class AutocompleteInput extends Component {
+
+@observer
+class AutoCompleteInput extends Component {
+    @observable dataSource = []
+    @observable selectedText = ''
     handleNewRequest = (chosenRequest, index) => {
         if (index !== -1) {
-            const { choices, input, optionValue } = this.props;
-            input.onChange(choices[index][optionValue]);
+            const { dataSourceConfig, input, record, source } = this.props
+            record[source] = this.dataSource[index][dataSourceConfig.value]
+        }
+        if (this.props.onNewRequest) {
+            this.props.onNewRequest(chosenRequest, index)
+        }
+    }
+
+    handleUpdateInput = (searchText) => {
+        const { reference, maxSearchResults, dataSourceConfig } = this.props
+        if (reference) {
+            getStore(reference.entityName).list(maxSearchResults, 0, "", reference.filter, searchText).then((data) => {
+                this.dataSource = data.records
+            })
+        }
+        if (this.props.onUpdateInput) {
+            this.props.onUpdateInput(searchText)
         }
     }
 
     render() {
-        const { choices, elStyle, filter, input, label, options, optionText, optionValue, setFilter, source } = this.props;
-
-        const selectedSource = choices.find(choice => choice[optionValue] === input.value);
-        const option = typeof optionText === 'function' ?
-            optionText :
-            choice => choice[optionText];
-        const dataSource = choices.map(choice => ({
-            value: choice[optionValue],
-            text: option(choice),
-        }));
+        const { filter, label, source, record, reference } = this.props;
+        if (record[source] && reference) {
+            getStore(reference.entityName).read(record[source]).then((item) => {
+                if (item[reference.text] !== this.selectedText) {
+                    this.selectedText = item[reference.text]
+                }
+            });
+        }
+        let dataSourceConfig = this.props.dataSourceConfig
+        if (reference) {
+            dataSourceConfig.value = reference.value
+            dataSourceConfig.text = reference.text
+        }
         return (
             <AutoComplete
-                searchText={selectedSource && option(selectedSource)}
-                dataSource={dataSource}
+                {...collectProps(this.props, AutoComplete.propTypes) }
+                dataSource={toJS(this.dataSource)}
+                dataSourceConfig={dataSourceConfig}
+                searchText={this.selectedText}
                 floatingLabelText={label}
-                filter={filter}
                 onNewRequest={this.handleNewRequest}
-                onUpdateInput={setFilter}
+                onUpdateInput={this.handleUpdateInput}
                 openOnFocus
-                style={elStyle}
-                {...options}
             />
         );
     }
 }
 
-AutocompleteInput.propTypes = {
-    addField: PropTypes.bool.isRequired,
-    choices: PropTypes.arrayOf(PropTypes.object),
-    elStyle: PropTypes.object,
+AutoCompleteInput.propTypes = Object.assign({}, AutoComplete.propTypes, {
     filter: PropTypes.func.isRequired,
-    input: PropTypes.object,
     label: PropTypes.string,
-    options: PropTypes.object,
-    optionElement: PropTypes.element,
-    optionText: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.func,
-    ]).isRequired,
-    optionValue: PropTypes.string.isRequired,
-    setFilter: PropTypes.func,
     source: PropTypes.string,
-};
+    record: PropTypes.object,
+    reference: PropTypes.object,
+})
 
-AutocompleteInput.defaultProps = {
-    addField: true,
-    choices: [],
+AutoCompleteInput.defaultProps = Object.assign({}, AutoComplete.defaultProps, {
     filter: AutoComplete.fuzzyFilter,
-    options: {},
-    optionText: 'name',
-    optionValue: 'id',
-};
+    record: { "_": "" },
+    dataSource: [],
+    dataSourceConfig: { value: 'id', text: 'name' },
+})
 
-export default AutocompleteInput;
+export default AutoCompleteInput;

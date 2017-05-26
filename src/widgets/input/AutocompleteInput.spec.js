@@ -1,9 +1,9 @@
 import React from 'react';
 import assert from 'assert';
 import { shallow } from 'enzyme';
-import AutocompleteInput from './AutocompleteInput';
+import AutoCompleteInput from './AutoCompleteInput';
 
-describe('<AutocompleteInput />', () => {
+describe('<AutoCompleteInput />', () => {
     const defaultProps = {
         source: 'foo',
         meta: {},
@@ -11,14 +11,14 @@ describe('<AutocompleteInput />', () => {
     };
 
     it('should use a mui AutoComplete', () => {
-        const wrapper = shallow(<AutocompleteInput {...defaultProps} label="hello" />);
+        const wrapper = shallow(<AutoCompleteInput {...defaultProps} label="hello" />);
         const AutoCompleteElement = wrapper.find('AutoComplete');
         assert.equal(AutoCompleteElement.length, 1);
         assert.equal(AutoCompleteElement.prop('floatingLabelText'), 'hello');
     });
 
     it('should use the input parameter value as the initial input searchText', () => {
-        const wrapper = shallow(<AutocompleteInput
+        const wrapper = shallow(<AutoCompleteInput
             {...defaultProps}
             input={{ value: 2 }}
             choices={[{ id: 2, name: 'foo' }]}
@@ -28,7 +28,7 @@ describe('<AutocompleteInput />', () => {
     });
 
     it('should pass choices as dataSource', () => {
-        const wrapper = shallow(<AutocompleteInput
+        const wrapper = shallow(<AutoCompleteInput
             {...defaultProps}
             choices={[
                 { id: 'M', name: 'Male' },
@@ -44,7 +44,7 @@ describe('<AutocompleteInput />', () => {
     });
 
     it('should use optionValue as value identifier', () => {
-        const wrapper = shallow(<AutocompleteInput
+        const wrapper = shallow(<AutoCompleteInput
             {...defaultProps}
             optionValue="foobar"
             choices={[
@@ -58,7 +58,7 @@ describe('<AutocompleteInput />', () => {
     });
 
     it('should use optionText with a string value as text identifier', () => {
-        const wrapper = shallow(<AutocompleteInput
+        const wrapper = shallow(<AutoCompleteInput
             {...defaultProps}
             optionText="foobar"
             choices={[
@@ -72,7 +72,7 @@ describe('<AutocompleteInput />', () => {
     });
 
     it('should use optionText with a function value as text identifier', () => {
-        const wrapper = shallow(<AutocompleteInput
+        const wrapper = shallow(<AutoCompleteInput
             {...defaultProps}
             optionText={choice => choice.foobar}
             choices={[
