@@ -71,11 +71,6 @@ function create(entityName) {
         }
       }))
     }
-    find(id) {
-      return this.records.find((record) => {
-        return record.id === id
-      })
-    }
   }
   return classDefine
 }
