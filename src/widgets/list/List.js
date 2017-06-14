@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { observable, ObservableMap, observe, toJS } from "mobx"
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardText } from 'material-ui/Card';
@@ -49,12 +50,14 @@ export class List extends Component {
         }
         if (props.urlBinded && this.currentHref != location.href) {
             const params = new URL(location.href).searchParams
-            for (const i in this.query) {
-                if (params.has(i)) {
-                    if (typeof emptyQuery[i] === 'string') {
-                        this.query[i] = params.get(i)
-                    } else {
-                        this.query[i] = JSON.parse(params.get(i))
+            if (params) {
+                for (const i in this.query) {
+                    if (params.has(i)) {
+                        if (typeof emptyQuery[i] === 'string') {
+                            this.query[i] = params.get(i)
+                        } else {
+                            this.query[i] = JSON.parse(params.get(i))
+                        }
                     }
                 }
             }

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import { getValues } from '../utils'
 
@@ -7,8 +8,8 @@ class LinkField extends React.Component {
     render() {
         let { source, record = {}, elStyle, convert, target } = this.props
         const value = convert.apply(this, getValues(record, source))
-        return <a href={value.href} style={elStyle} target={target}>
-            {value.text}
+        return <a href={value.href||value} style={elStyle} target={target}>
+            {value.text||value}
         </a>
     }
 }

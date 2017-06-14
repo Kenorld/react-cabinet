@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import mobx, { observable } from "mobx"
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardText } from 'material-ui/Card';
