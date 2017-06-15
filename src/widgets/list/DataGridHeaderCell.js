@@ -37,7 +37,7 @@ const DataGridHeaderCell = ({ field, defaultStyle, currentSort, updateSort }) =>
                     style={styles.sortButton}
                 />
                 :
-                (field.props.label && <span style={styles.nonSortableLabel}>{title(field.props.label, field.props.source)}</span>)
+                (field.props.label && <span style={styles.nonSortableLabel}>{field.props.label || field.props.source}</span>)
             }
         </TableHeaderColumn>
     );

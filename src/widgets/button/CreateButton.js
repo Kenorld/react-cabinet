@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom';
-import FlatButton from 'material-ui/FlatButton';
+import ActionButton from './ActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import { getUIURL } from '../../url'
 
-const CreateButton = ({ entityName }) => <FlatButton
-    primary
+const CreateButton = ({ entityName }) => <ActionButton
     label="Create"
     icon={<ContentAdd />}
     containerElement={<Link to={getUIURL(entityName, 'create')} />}
-    style={{ overflow: 'inherit' }}
 />;
 
 CreateButton.propTypes = {

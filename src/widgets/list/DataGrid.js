@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {PropTypes as MobxTypes} from 'mobx-react'
+import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import DataGridCell from './DataGridCell';
 import DataGridHeaderCell from './DataGridHeaderCell';
+import { collectProps, fetchValue, writeValue } from '../utils'
 
 const defaultStyles = {
     table: {
@@ -77,16 +79,33 @@ const defaultStyles = {
  */
 @observer
 class DataGrid extends Component {
+    @observable selectedRecords = []
+
     updateSort = (event) => {
         event.stopPropagation();
         this.props.setSort(event.currentTarget.dataset.sort);
     }
 
+    getSelectedRecords(){
+        return this.selectedRecords
+    }
+    handleRowSelection = (selectedRows)=>{
+        if (selectedRows === 'all'){
+            this.selectedRecords = this.props.records
+        }else{
+            this.selectedRecords = selectedRows.map((index)=>{
+                return this.props.records[index]
+            })
+        }
+    }
+
     render() {
-        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, displaySelectAll, adjustForCheckbox, allRowsSelected, multiSelectable, selectable } = this.props;
+        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, displaySelectAll, enableSelectAll, adjustForCheckbox, allRowsSelected, multiSelectable, selectable } = this.props;
         return (
-            <Table style={styles.table} allRowsSelected={allRowsSelected} multiSelectable={multiSelectable} selectable={selectable}>
-                <TableHeader displaySelectAll={displaySelectAll} adjustForCheckbox={adjustForCheckbox}>
+            <Table style={styles.table} 
+            {...collectProps(this.props, Table.propTypes)}
+            onRowSelection={this.handleRowSelection}>
+                <TableHeader displaySelectAll={displaySelectAll} enableSelectAll={enableSelectAll} adjustForCheckbox={adjustForCheckbox}>
                     <TableRow style={styles.tr}>
                         {React.Children.map(children, (field, index) => (
                             <DataGridHeaderCell
@@ -125,6 +144,7 @@ DataGrid.propTypes = {
     styles: PropTypes.object,
     rowStyle: PropTypes.func,
     displaySelectAll: PropTypes.bool,
+    enableSelectAll: PropTypes.bool,
     adjustForCheckbox: PropTypes.bool,
     allRowsSelected: PropTypes.bool,
     multiSelectable: PropTypes.bool,
@@ -141,6 +161,7 @@ DataGrid.defaultProps = {
     allRowsSelected: false,
     multiSelectable: true,
     selectable: true,
+    enableSelectAll: true,
 
     // stripedRows: false,
     // showRowHover: false,
