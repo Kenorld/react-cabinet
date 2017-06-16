@@ -21,7 +21,7 @@ export function collectProps(originalProps, definedProps) {
 }
 
 export function fetchValue(element, defaultValue = "") {
-  const value = get(element.record, element.props.source)
+  const value = get(element.record||element.props.record, element.props.source)
   return value === undefined ? defaultValue : value
 }
 

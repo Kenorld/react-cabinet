@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
+import { observable } from "mobx"
+import { observer } from 'mobx-react'
 import TextField from 'material-ui/TextField';
+import { collectProps, fetchValue, writeValue } from '../utils'
 
 /**
  * An Input component for a number
@@ -14,49 +17,56 @@ import TextField from 'material-ui/TextField';
  *
  * The object passed as `options` props is passed to the material-ui <TextField> component
  */
+@observer
 class NumberInput extends Component {
     /**
      * Necessary because of a React bug on <input type="number">
      * @see https://github.com/facebook/react/issues/1425
      */
     handleBlur = () => {
-        this.props.input.onChange(parseFloat(this.props.input.value));
+        this.props.onChange(event, this.props.source, event.target.value);
+    }
+
+    handleChange = (event) => {
+        this.props.writeValue(this, event.target.value)
+        if (this.props.onChange) {
+            this.props.onChange(event, this.props.source, event.target.value)
+        }
     }
 
     render() {
-        const { elStyle, input, label, meta: { touched, error }, options, source, step } = this.props;
+        const { label, fetchValue } = this.props;
         return (
             <TextField
-                value={input.value}
-                onChange={input.onChange}
+                {...collectProps(this.props, TextField.propTypes) }
+                value={fetchValue(this)}
+                onChange={this.handleChange}
                 onBlur={this.handleBlur}
                 type="number"
-                step={step}
                 floatingLabelText={label}
-                errorText={touched && error}
-                style={elStyle}
-                {...options}
             />
         );
     }
 }
 
 NumberInput.propTypes = {
-    elStyle: PropTypes.object,
-    input: PropTypes.object,
     label: PropTypes.string,
-    meta: PropTypes.object,
     name: PropTypes.string,
     onChange: PropTypes.func,
-    options: PropTypes.object,
+    record: PropTypes.object,
     source: PropTypes.string,
+    fetchValue: PropTypes.func,
+    writeValue: PropTypes.func,
     step: PropTypes.string.isRequired,
     validation: PropTypes.object,
 };
 
 NumberInput.defaultProps = {
-    options: {},
+    record: { "_": "" },
+    source: "_",
     step: 'any',
+    fetchValue: fetchValue,
+    writeValue: writeValue
 };
 
 export default NumberInput;

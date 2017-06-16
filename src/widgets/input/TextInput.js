@@ -21,8 +21,6 @@ import { collectProps, fetchValue, writeValue } from '../utils'
  */
 @observer
 class TextInput extends React.Component {
-    @observable record
-
     handleChange = (event) => {
         this.props.writeValue(this, event.target.value)
         if (this.props.onChange) {
@@ -30,37 +28,22 @@ class TextInput extends React.Component {
         }
     }
 
-    componentWillMount() {
-        this.record = this.props.record
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.record.id !== nextProps.record.id) {
-            this.record = nextProps.record
-        }
-    }
     render() {
-        const { onChange, label, meta: { touched, error }, disabled, options, type, source, elStyle } = this.props
+        const { fetchValue, label} = this.props
         return <TextField
-            value={this.props.fetchValue(this)}
-            disabled={disabled}
+            {...collectProps(this.props, TextField.propTypes) }
+            value={fetchValue(this)}
             onChange={this.handleChange}
-            type={type}
             floatingLabelText={<span>{label}</span>}
-            style={elStyle}
-            {...options}
         />
     }
 }
 
 TextInput.propTypes = {
-    elStyle: PropTypes.object,
     onChange: PropTypes.func,
     label: PropTypes.string,
-    meta: PropTypes.object,
     name: PropTypes.string,
     disabled: PropTypes.bool,
-    options: PropTypes.object,
     record: PropTypes.object,
     source: PropTypes.string,
     fetchValue: PropTypes.func,
@@ -70,8 +53,6 @@ TextInput.propTypes = {
 };
 
 TextInput.defaultProps = {
-    options: {},
-    meta: {},
     record: { "_": "" },
     source: "_",
     disabled: false,

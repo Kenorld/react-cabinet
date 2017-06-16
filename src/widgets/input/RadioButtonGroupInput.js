@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Labeled from './Labeled';
+import { collectProps, fetchValue, writeValue } from '../utils'
 
 /**
  * An Input component for a radio button group, using an array of objects for the options

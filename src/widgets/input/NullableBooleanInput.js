@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import SelectInput from './SelectInput';
+import { collectProps, fetchValue, writeValue } from '../utils'
 
 const NullableBooleanInput = ({ input, meta: { touched, error }, label, source, elStyle }) => (
     <SelectInput
