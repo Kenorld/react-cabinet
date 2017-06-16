@@ -10,11 +10,11 @@ export function getValues(record, source) {
   return values
 }
 
-export function collectProps(originalProps, definedProps) {
+export function collectProps(data, definedProps) {
   const props = {}
   for (let key in definedProps) {
-    if (originalProps[key] !== undefined) {
-      props[key] = originalProps[key]
+    if (data[key] !== undefined) {
+      props[key] = data[key]
     }
   }
   return props

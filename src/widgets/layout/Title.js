@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
+import { collectProps } from '../utils'
 
 const Title = ({ defaultTitle, record, title }) => {
     if (!title) {
@@ -8,7 +9,7 @@ const Title = ({ defaultTitle, record, title }) => {
     if (typeof title === 'string') {
         return <span>{title}</span>;
     }
-    return React.cloneElement(title, { record });
+    return React.cloneElement(title, collectProps({ record }, title.type.propTypes));
 };
 
 Title.propTypes = {

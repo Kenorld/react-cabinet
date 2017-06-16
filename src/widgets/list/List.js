@@ -9,6 +9,7 @@ import DefaultPagination from './Pagination';
 import DefaultActions from './Actions';
 import stores, { getStore } from '../../stores'
 import { appendQueryToURL } from '../../url'
+import { collectProps } from '../utils'
 
 const { queryStore } = stores
 const emptyQuery = {
@@ -146,7 +147,8 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            node = React.cloneElement(this.props.children, { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort })
+            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
+            node = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
         }
         return (
             <Card style={{ margin: '2em', opacity: 1 }}>
