@@ -92,6 +92,8 @@ class DataGrid extends Component {
     handleRowSelection = (selectedRows)=>{
         if (selectedRows === 'all'){
             this.selectedRecords = this.props.records
+        } if (selectedRows === 'all') {
+            this.selectedRecords = []
         }else{
             this.selectedRecords = selectedRows.map((index)=>{
                 return this.props.records[index]
