@@ -147,11 +147,15 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
-            node = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
+            if (this.mainNode) {
+                node = this.mainNode
+            } else {
+                const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
+                node = this.mainNode = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
+            }
         }
         return (
-            <Card style={{ margin: '2em', opacity: 1 }}>
+            <Card>
                 {actions && React.cloneElement(actions, {
                     entityName,
                     filters,

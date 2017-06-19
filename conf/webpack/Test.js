@@ -41,52 +41,7 @@ class WebpackTestConfig extends WebpackBaseConfig {
             ]
           },
           {
-            test: /\.cssmodule\.less$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              },
-              { loader: 'less-loader' }
-            ]
-          },
-          {
-            test: /\.cssmodule\.styl$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              },
-              { loader: 'stylus-loader' }
-            ]
-          },
-          {
-            test: /\.cssmodule\.(sass|scss)$/,
-            loaders: [
-              { loader: 'style-loader' },
-              {
-                loader: 'css-loader',
-                query: cssModulesQuery
-              },
-              { loader: 'sass-loader' }
-            ]
-          },
-          {
             test: /^.((?!cssmodule).)*\.css$/,
-            loader: 'null-loader'
-          },
-          {
-            test: /^.((?!cssmodule).)*\.(sass|scss)$/,
-            loader: 'null-loader'
-          },
-          {
-            test: /^.((?!cssmodule).)*\.less$/,
-            loader: 'null-loader'
-          },
-          {
-            test: /^.((?!cssmodule).)*\.styl$/,
             loader: 'null-loader'
           },
           {

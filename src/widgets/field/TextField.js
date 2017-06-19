@@ -6,15 +6,15 @@ import {getValues} from '../utils'
 @observer
 class TextField extends React.Component {
     render() {
-        const { source, record = {}, convert, elStyle } = this.props
-        return <span style={elStyle}>{convert.apply(this, getValues(record, source))}</span>;
+        const { source, record = {}, convert, style } = this.props
+        return <span style={style}>{convert.apply(this, getValues(record, source))}</span>;
     }
 }
 
 
 TextField.propTypes = {
     addLabel: PropTypes.bool,
-    elStyle: PropTypes.object,
+    style: PropTypes.object,
     label: PropTypes.string,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,

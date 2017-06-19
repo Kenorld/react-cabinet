@@ -19,15 +19,13 @@ import { getStore } from '../../stores'
 export class ReferenceField extends Component {
     @observable referenceRecord
     @observable isLoading = true
-    loadData(reference = this.props.reference, record = this.props.record, source = this.props.source) {
+    async loadData(reference = this.props.reference, record = this.props.record, source = this.props.source) {
         const value = get(this.props.record, this.props.source)
         if (value !== "" && value != null) {
             this.isLoading = true
             const store = getStore(this.props.reference)
-            store.read(value).then((referenceRecord) => {
-                this.referenceRecord = referenceRecord
-                this.isLoading = false
-            })
+            this.referenceRecord = await store.read(value)
+            this.isLoading = false
         } else {
             this.isLoading = false
         }
@@ -44,22 +42,22 @@ export class ReferenceField extends Component {
     }
 
     render() {
-        const { record, source, reference, value, allowEmpty, children, elStyle } = this.props;
+        const { record, source, reference, value, allowEmpty, children, enableLink } = this.props;
         if (React.Children.count(children) !== 1) {
             throw new Error('<ReferenceField> only accepts a single child');
         }
         if (!this.referenceRecord && !allowEmpty) {
             return this.isLoading ? <LinearProgress /> : <p>[EMPTY]</p>;
         }
-        return (
-            <Link style={elStyle} to={getUIURL(reference, 'edit', this.referenceRecord.id)}>
-                {React.cloneElement(children, {
-                    record: this.referenceRecord,
-                    entityName: reference,
-                    allowEmpty,
-                })}
-            </Link>
-        );
+        const innerElement = React.cloneElement(children, {
+            record: this.referenceRecord,
+            entityName: reference,
+            allowEmpty,
+        })
+        return enableLink ?
+            <Link to={getUIURL(reference, 'edit', this.referenceRecord.id)}>
+                {innerElement}
+            </Link> : innerElement
     }
 }
 
@@ -67,10 +65,10 @@ ReferenceField.propTypes = {
     addLabel: PropTypes.bool,
     allowEmpty: PropTypes.bool.isRequired,
     children: PropTypes.element.isRequired,
-    elStyle: PropTypes.object,
     label: PropTypes.string,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
+    enableLink: PropTypes.bool,
     reference: PropTypes.string.isRequired,
 };
 
@@ -79,6 +77,7 @@ ReferenceField.defaultProps = {
     record: { id: "", "_": "" },
     source: "_",
     allowEmpty: false,
+    enableLink: true,
 };
 
 export default ReferenceField;

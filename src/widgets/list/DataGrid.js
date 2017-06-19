@@ -120,7 +120,7 @@ class DataGrid extends Component {
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableBody style={styles.tbody}>
+                <TableBody style={styles.tbody} deselectOnClickaway={false}>
                     {records.map((record, rowIndex) => (
                         <TableRow style={rowStyle ? rowStyle(record, rowIndex) : styles.tr} key={record.id}>
                             {React.Children.map(children, (field, index) => (
