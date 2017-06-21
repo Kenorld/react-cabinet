@@ -102,12 +102,12 @@ class DataGrid extends Component {
     }
 
     render() {
-        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, displaySelectAll, enableSelectAll, adjustForCheckbox, allRowsSelected, multiSelectable, selectable } = this.props;
+        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, enableSelectAll, allRowsSelected, multiSelectable, selectable } = this.props;
         return (
             <Table style={styles.table} 
             {...collectProps(this.props, Table.propTypes)}
             onRowSelection={this.handleRowSelection}>
-                <TableHeader displaySelectAll={displaySelectAll} enableSelectAll={enableSelectAll} adjustForCheckbox={adjustForCheckbox}>
+                <TableHeader displaySelectAll={enableSelectAll&&multiSelectable} enableSelectAll={enableSelectAll} adjustForCheckbox={multiSelectable||selectable}>
                     <TableRow style={styles.tr}>
                         {React.Children.map(children, (field, index) => (
                             <DataGridHeaderCell
@@ -120,7 +120,7 @@ class DataGrid extends Component {
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableBody style={styles.tbody} deselectOnClickaway={false}>
+                <TableBody style={styles.tbody} deselectOnClickaway={false} displayRowCheckbox={multiSelectable||selectable}>
                     {records.map((record, rowIndex) => (
                         <TableRow style={rowStyle ? rowStyle(record, rowIndex) : styles.tr} key={record.id}>
                             {React.Children.map(children, (field, index) => (
@@ -145,9 +145,9 @@ DataGrid.propTypes = {
     setSort: PropTypes.func,
     styles: PropTypes.object,
     rowStyle: PropTypes.func,
-    displaySelectAll: PropTypes.bool,
+    // displaySelectAll: PropTypes.bool,
     enableSelectAll: PropTypes.bool,
-    adjustForCheckbox: PropTypes.bool,
+    // adjustForCheckbox: PropTypes.bool,
     allRowsSelected: PropTypes.bool,
     multiSelectable: PropTypes.bool,
     selectable: PropTypes.bool,
@@ -158,8 +158,8 @@ DataGrid.propTypes = {
 
 DataGrid.defaultProps = {
     records: [],
-    displaySelectAll: true,
-    adjustForCheckbox: true,
+    // displaySelectAll: true,
+    // adjustForCheckbox: true,
     allRowsSelected: false,
     multiSelectable: true,
     selectable: true,

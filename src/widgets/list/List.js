@@ -147,12 +147,8 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            if (this.mainNode) {
-                node = this.mainNode
-            } else {
-                const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
-                node = this.mainNode = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
-            }
+            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
+            node = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
         }
         return (
             <Card>
@@ -198,14 +194,6 @@ List.propTypes = {
     query: PropTypes.object,
     urlBinded: PropTypes.bool,
     entityName: PropTypes.string.isRequired,
-    displaySelectAll: PropTypes.bool,
-    adjustForCheckbox: PropTypes.bool,
-};
-
-List.defaultProps = {
-    urlBinded: true,
-    displaySelectAll: true,
-    adjustForCheckbox: true,
 };
 
 export default List;
