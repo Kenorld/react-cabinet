@@ -41,7 +41,7 @@ const toLocaleStringSupportsLocales = (() => {
 @observer
 class DateField extends React.Component {
     render() {
-        let { style, locales, options, record, showTime = false, source, relativeTime } = this.propTypes
+        let { style, locales, options, record, showTime = false, source, relativeTime } = this.props
         if (!record) return null;
         const value = fetchValue(this)
         if (value == null) return null;
