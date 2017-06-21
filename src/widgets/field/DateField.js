@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
-import get from 'lodash.get';
+import moment  from 'moment'
+import { collectProps, fetchValue, writeValue } from '../utils'
 
 const toLocaleStringSupportsLocales = (() => {
     // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
@@ -40,21 +41,25 @@ const toLocaleStringSupportsLocales = (() => {
 @observer
 class DateField extends React.Component {
     render() {
-        let { elStyle, locales, options, record, showTime = false, source } = this.propTypes
+        let { style, locales, options, record, showTime = false, source, relativeTime } = this.propTypes
         if (!record) return null;
-        const value = get(record, source);
+        const value = fetchValue(this)
         if (value == null) return null;
         const date = value instanceof Date ? value : new Date(value);
-        const dateString = showTime ?
-            (toLocaleStringSupportsLocales ? date.toLocaleString(locales, options) : date.toLocaleString()) :
-            (toLocaleStringSupportsLocales ? date.toLocaleDateString(locales, options) : date.toLocaleDateString());
+        if (!relativeTime) {
+            const dateString = showTime ?
+                (toLocaleStringSupportsLocales ? date.toLocaleString(locales, options) : date.toLocaleString()) :
+                (toLocaleStringSupportsLocales ? date.toLocaleDateString(locales, options) : date.toLocaleDateString());
 
-        return <span style={elStyle}>{dateString}</span>
+            return <span style={style}>{dateString}</span>
+        } else {
+            return <span style={style}>{fromNow(data).fromNow()}</span>
+        }
     }
 }
 DateField.propTypes = {
     addLabel: PropTypes.bool,
-    elStyle: PropTypes.object,
+    style: PropTypes.object,
     label: PropTypes.string,
     locales: PropTypes.oneOfType([
         PropTypes.string,
@@ -64,10 +69,12 @@ DateField.propTypes = {
     record: PropTypes.object,
     showTime: PropTypes.bool,
     source: PropTypes.string.isRequired,
+    relativeTime: PropTypes.bool,
 };
 
 DateField.defaultProps = {
     addLabel: true,
+    relativeTime: true,
 };
 
 export default DateField;

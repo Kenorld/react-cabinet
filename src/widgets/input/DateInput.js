@@ -17,37 +17,42 @@ export const datify = input => {
 };
 
 class DateInput extends Component {
-    onChange = (_, date) => this.props.input.onChange(date);
+    handleChange = (event, date) => {
+        this.props.writeValue(this, date)
+        if (this.props.onChange) {
+            this.props.onChange(event, this.props.source, date)
+        }
+    }
 
     render() {
-        const { input, label, meta: { touched, error }, options, source, elStyle } = this.props;
-
+        const { fetchValue, label } = this.props
         return (<DatePicker
-            {...input}
-            errorText={touched && error}
+            {...collectProps(this.props, DatePicker.propTypes) }
             floatingLabelText={label}
             DateTimeFormat={Intl.DateTimeFormat}
             container="inline"
             autoOk
-            value={datify(input.value)}
-            onChange={this.onChange}
-            style={elStyle}
-            {...options}
+            value={datify(fetchValue(this))}
+            onChange={this.handleChange}
         />);
     }
 }
 
 DateInput.propTypes = {
-    elStyle: PropTypes.object,
-    input: PropTypes.object,
+    style: PropTypes.object,
     label: PropTypes.string,
-    meta: PropTypes.object,
-    options: PropTypes.object,
+    disabled: PropTypes.bool,
     source: PropTypes.string,
+    fetchValue: PropTypes.func,
+    writeValue: PropTypes.func,
 };
 
 DateInput.defaultProps = {
-    options: {},
+    record: { "_": "" },
+    source: "_",
+    disabled: false,
+    fetchValue: fetchValue,
+    writeValue: writeValue
 };
 
 export default DateInput;
