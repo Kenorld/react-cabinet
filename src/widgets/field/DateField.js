@@ -53,7 +53,7 @@ class DateField extends React.Component {
 
             return <span style={style}>{dateString}</span>
         } else {
-            return <span style={style}>{fromNow(data).fromNow()}</span>
+            return <span style={style}>{moment(date).fromNow()}</span>
         }
     }
 }

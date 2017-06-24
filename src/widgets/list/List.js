@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { observable, ObservableMap, observe, toJS } from "mobx"
+import { observable, ObservableMap, observe, toJS, reaction, computed } from "mobx"
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import debounce from 'lodash.debounce';
@@ -33,6 +33,8 @@ export class List extends Component {
     @observable totalCount = 0
     @observable records = []
     @observable isLoading = true
+
+
     query = { ...emptyQuery }
     currentHref
     constructor(props) {
@@ -67,6 +69,8 @@ export class List extends Component {
     }
     componentDidMount() {
         this.loadData();
+        const store = getStore(this.props.entityName)
+        this.loadReaction = reaction(() => store.records.map((record)=>record.id), ids=>this.loadData())
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.query != nextProps.query) {
@@ -77,22 +81,25 @@ export class List extends Component {
             this.debouncedLoadData(nextProps)
         }
     }
+    componentWillUnmount(){
+        this.loadReaction()
+    }
 
     refresh = (event) => {
         event.stopPropagation();
         this.loadData();
     }
+    loadData = async (props = this.props) => {
+        if (!props.entityName) return
 
-    loadData = (props = this.props) => {
         this.updateQuery(props)
         const { limit, skip, sort, filter, search } = this.query;
         const store = getStore(props.entityName)
         this.isLoading = true
-        store.list(limit, skip, sort, filter, search).then((data) => {
-            this.records = data.records
-            this.totalCount = data.total_count
-            this.isLoading = false
-        });
+        const data = await store.list(limit, skip, sort, filter, search)
+        this.records = data.records
+        this.totalCount = data.total_count
+        this.isLoading = false
     }
 
     setSort = (sort) => {
@@ -143,13 +150,14 @@ export class List extends Component {
         } else if (!this.records || this.records.length === 0) {
             node = <CardText>No data!</CardText>
         }
-        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, title, children } = this.props
+        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, hasRefresh, title, children } = this.props
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
             const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
             node = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
         }
+        const refresh = hasRefresh ? (this.props.refresh || this.refresh) : null
         return (
             <Card>
                 {actions && React.cloneElement(actions, {
@@ -160,7 +168,7 @@ export class List extends Component {
                     hasCreate,
                     shownFilters: this.state,
                     showFilter: this.showFilter,
-                    refresh: this.refresh,
+                    refresh,
                 })}
                 <CardTitle title={<Title title={title} defaultTitle={defaultTitle} />} />
                 {filters && React.cloneElement(filters, {
@@ -194,6 +202,13 @@ List.propTypes = {
     query: PropTypes.object,
     urlBinded: PropTypes.bool,
     entityName: PropTypes.string.isRequired,
-};
+    hasCreate: PropTypes.bool,
+    hasRefresh: PropTypes.bool,
+    refresh: PropTypes.func
+}
+List.defaultProps = {
+    hasCreate: false,
+    hasRefresh: true
+}
 
 export default List;

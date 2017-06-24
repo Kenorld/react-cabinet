@@ -11,6 +11,9 @@ class SaveButton extends Component {
             // prevent double submission
             e.preventDefault();
         }
+        if (this.props.onPress){
+            this.props.onPress(e)
+        }
     }
 
     render() {

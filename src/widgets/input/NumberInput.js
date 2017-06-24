@@ -19,29 +19,29 @@ import { collectProps, fetchValue, writeValue } from '../utils'
  */
 @observer
 class NumberInput extends Component {
-    /**
-     * Necessary because of a React bug on <input type="number">
-     * @see https://github.com/facebook/react/issues/1425
-     */
-    handleBlur = () => {
-        this.props.onChange(event, this.props.source, event.target.value);
-    }
+    // /**
+    //  * Necessary because of a React bug on <input type="number">
+    //  * @see https://github.com/facebook/react/issues/1425
+    //  */
+    // handleBlur = () => {
+    //     this.props.handleChange(event);
+    // }
 
-    handleChange = (event) => {
-        this.props.writeValue(this, event.target.value)
+    handleChange = (event, value) => {
+        this.props.writeValue(this, value)
         if (this.props.onChange) {
-            this.props.onChange(event, this.props.source, event.target.value)
+            this.props.onChange(event, this.props.source, value)
         }
     }
 
     render() {
-        const { label, fetchValue } = this.props;
+        const { label, fetchValue, step } = this.props;
         return (
             <TextField
                 {...collectProps(this.props, TextField.propTypes) }
                 value={fetchValue(this)}
                 onChange={this.handleChange}
-                onBlur={this.handleBlur}
+                step={step}
                 type="number"
                 floatingLabelText={label}
             />
@@ -52,6 +52,7 @@ class NumberInput extends Component {
 NumberInput.propTypes = {
     label: PropTypes.string,
     name: PropTypes.string,
+    onBlur: PropTypes.func,
     onChange: PropTypes.func,
     record: PropTypes.object,
     source: PropTypes.string,
@@ -59,9 +60,12 @@ NumberInput.propTypes = {
     writeValue: PropTypes.func,
     step: PropTypes.string.isRequired,
     validation: PropTypes.object,
+    max: PropTypes.number,
+    min: PropTypes.number,
 };
 
 NumberInput.defaultProps = {
+    onBlur: () => { },
     record: { "_": "" },
     source: "_",
     step: 'any',

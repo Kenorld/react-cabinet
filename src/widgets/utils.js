@@ -1,5 +1,6 @@
 import get from 'lodash.get'
 import set from 'lodash.set'
+import {computed} from 'mobx'
 
 export function getValues(record, source) {
   const fields = source.split(','), values = []
@@ -26,5 +27,5 @@ export function fetchValue(element, defaultValue = "") {
 }
 
 export function writeValue(element, value) {
-  set(element.record, element.props.source, value)
+  set(element.record||element.props.record, element.props.source, value)
 }

@@ -20,25 +20,25 @@ const styles = {
 
 @observer
 class BooleanInput extends Component {
-    handleChange = (event) => {
-        this.props.writeValue(this, event.target.value)
+    handleChange = (event, value) => {
+        this.props.writeValue(this, value)
         if (this.props.onChange) {
-            this.props.onChange(event, this.props.source, event.target.value)
+            this.props.onChange(event, this.props.source, value)
         }
     }
     render() {
         return <Toggle
+            labelStyle={styles.label}
+            style={styles.toggle}
             {...collectProps(this.props, Toggle.propTypes) }
             defaultToggled={this.props.fetchValue(this, false)}
             onToggle={this.handleChange}
-            labelStyle={styles.label}
-            style={styles.toggle}
         />
     }
 }
 
 BooleanInput.propTypes = {
-    elStyle: PropTypes.object,
+    style: PropTypes.object,
     record: PropTypes.object,
     label: PropTypes.string,
     source: PropTypes.string,
