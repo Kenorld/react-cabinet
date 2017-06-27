@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import moment  from 'moment'
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 const toLocaleStringSupportsLocales = (() => {
     // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString

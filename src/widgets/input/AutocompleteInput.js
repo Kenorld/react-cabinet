@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { observable, toJS } from 'mobx'
 import { observer } from 'mobx-react'
 import AutoComplete from 'material-ui/AutoComplete'
-import { collectProps } from '../utils'
 import { getStore } from '../../stores'
 
 /**
@@ -88,7 +87,7 @@ class AutoCompleteInput extends Component {
     }
 
     render() {
-        const { filter, label, source, record, reference } = this.props;
+        const { label, source, record, reference } = this.props;
         if (record[source] && reference) {
             getStore(reference.entityName).read(record[source]).then((item) => {
                 if (item[reference.text] !== this.selectedText) {
@@ -103,7 +102,6 @@ class AutoCompleteInput extends Component {
         }
         return (
             <AutoComplete
-                {...collectProps(this.props, AutoComplete.propTypes) }
                 dataSource={toJS(this.dataSource)}
                 dataSourceConfig={dataSourceConfig}
                 searchText={this.selectedText}

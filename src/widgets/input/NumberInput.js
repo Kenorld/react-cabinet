@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { observable } from "mobx"
 import { observer } from 'mobx-react'
 import TextField from 'material-ui/TextField';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 /**
  * An Input component for a number
@@ -35,10 +35,10 @@ class NumberInput extends Component {
     }
 
     render() {
-        const { label, fetchValue, step } = this.props;
+        const { label, fetchValue, step, style } = this.props;
         return (
             <TextField
-                {...collectProps(this.props, TextField.propTypes) }
+                style={style}
                 value={fetchValue(this)}
                 onChange={this.handleChange}
                 step={step}
@@ -50,6 +50,7 @@ class NumberInput extends Component {
 }
 
 NumberInput.propTypes = {
+    style: PropTypes.object,
     label: PropTypes.string,
     name: PropTypes.string,
     onBlur: PropTypes.func,

@@ -9,7 +9,6 @@ import DefaultPagination from './Pagination';
 import DefaultActions from './Actions';
 import stores, { getStore } from '../../stores'
 import { appendQueryToURL } from '../../url'
-import { collectProps } from '../utils'
 
 const { queryStore } = stores
 const emptyQuery = {
@@ -155,7 +154,7 @@ export class List extends Component {
         const defaultTitle = `${entityName} List`
         if (node == null) {
             const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
-            node = React.cloneElement(this.props.children, collectProps(props, this.props.children.type.propTypes))
+            node = React.cloneElement(this.props.children, props)
         }
         const refresh = hasRefresh ? (this.props.refresh || this.refresh) : null
         return (

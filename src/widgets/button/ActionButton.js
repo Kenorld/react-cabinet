@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom';
-import {RaisedButton, FlatButton} from 'material-ui';
-import { collectProps } from '../utils'
+import { RaisedButton, FlatButton } from 'material-ui';
 class ActionButton extends Component {
     handlePress = (e) => {
         if (this.props.onPress) {
@@ -10,33 +9,36 @@ class ActionButton extends Component {
         }
     }
     render() {
+        const { icon, style = {
+            margin: '10px 24px',
+            position: 'relative',
+        }, label } = this.props
         switch (this.props.type) {
             case 'flat':
                 return <FlatButton
-                    {...collectProps(this.props, FlatButton.propTypes) }
+                    label={label}
+                    icon={icon}
                     onTouchTap={this.handlePress}
-                    style={{ 
-                    margin: '10px 24px',
-                    position: 'relative', }}
+                    style={style}
                 />
             case 'raised':
                 return <RaisedButton
-                    {...collectProps(this.props, FlatButton.propTypes) }
+                    label={label}
+                    icon={icon}
                     onTouchTap={this.handlePress}
-                    style={{ 
-                    margin: '10px 24px',
-                    position: 'relative', }}
+                    style={style}
                 />
         }
     }
 }
 
 ActionButton.propTypes = {
+    style: PropTypes.object,
     type: PropTypes.string,
     entityName: PropTypes.string,
-    // label: PropTypes.string,
-    // icon: PropTypes.element,
-    // container: PropTypes.element,
+    label: PropTypes.string,
+    icon: PropTypes.element,
+    container: PropTypes.element,
     record: PropTypes.object,
 };
 ActionButton.defaultProps = {

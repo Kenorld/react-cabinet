@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Labeled from './Labeled';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 /**
  * An Input component for a radio button group, using an array of objects for the options
@@ -55,7 +55,7 @@ class RadioButtonGroupInput extends Component {
     }
 
     render() {
-        const { label, source, input, choices, optionText, optionValue, options, elStyle } = this.props;
+        const { label, source, input, choices, optionText, optionValue, style } = this.props;
         const option = React.isValidElement(optionText) ? // eslint-disable-line no-nested-ternary
             choice => React.cloneElement(optionText, { record: choice }) :
             (typeof optionText === 'function' ?
@@ -67,8 +67,7 @@ class RadioButtonGroupInput extends Component {
                 <RadioButtonGroup
                     name={source}
                     defaultSelected={input.value}
-                    style={elStyle}
-                    {...options}
+                    style={style}
                 >
                     {choices.map(choice =>
                         <RadioButton key={choice[optionValue]} label={option(choice)} value={choice[optionValue]} />

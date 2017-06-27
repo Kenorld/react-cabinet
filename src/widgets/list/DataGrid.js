@@ -6,7 +6,7 @@ import { observer } from 'mobx-react'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import DataGridCell from './DataGridCell';
 import DataGridHeaderCell from './DataGridHeaderCell';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 const defaultStyles = {
     table: {
@@ -105,7 +105,9 @@ class DataGrid extends Component {
         const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, enableSelectAll, allRowsSelected, multiSelectable, selectable } = this.props;
         return (
             <Table style={styles.table} 
-            {...collectProps(this.props, Table.propTypes)}
+            allRowsSelected={allRowsSelected}
+            selectable={selectable}
+            multiSelectable={multiSelectable}
             onRowSelection={this.handleRowSelection}>
                 <TableHeader displaySelectAll={enableSelectAll&&multiSelectable} enableSelectAll={enableSelectAll} adjustForCheckbox={multiSelectable||selectable}>
                     <TableRow style={styles.tr}>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import DatePicker from 'material-ui/DatePicker';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 export const datify = input => {
     if (!input) {
@@ -25,9 +25,9 @@ class DateInput extends Component {
     }
 
     render() {
-        const { fetchValue, label } = this.props
+        const { fetchValue, label, disabled } = this.props
         return (<DatePicker
-            {...collectProps(this.props, DatePicker.propTypes) }
+            disabled={disabled}
             floatingLabelText={label}
             DateTimeFormat={Intl.DateTimeFormat}
             container="inline"

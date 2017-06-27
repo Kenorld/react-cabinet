@@ -6,7 +6,7 @@ import { observable } from "mobx"
 import { observer } from 'mobx-react'
 import SelectField from 'material-ui/SelectField'
 import MenuItem from 'material-ui/MenuItem'
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 /**
  * An Input component for a select box, using an array of objects for the options
@@ -73,7 +73,7 @@ class SelectInput extends Component {
     }
 
     render() {
-        const { allowEmpty, label, choices, options, source, elStyle } = this.props
+        const { allowEmpty, choices, source, style } = this.props
         return (
             <SelectField
                 value={this.props.fetchValue(this)}
@@ -81,8 +81,7 @@ class SelectInput extends Component {
                 floatingLabelText={label}
                 onChange={this.handleChange}
                 autoWidth
-                style={elStyle}
-                {...options}
+                style={style}
             >
                 {allowEmpty &&
                     <MenuItem value={null} primaryText="" />
@@ -98,11 +97,10 @@ class SelectInput extends Component {
 SelectInput.propTypes = {
     allowEmpty: PropTypes.bool.isRequired,
     choices: PropTypes.arrayOf(PropTypes.object),
-    elStyle: PropTypes.object,
+    style: PropTypes.object,
     record: PropTypes.object,
     onChange: PropTypes.func,
     label: PropTypes.string,
-    options: PropTypes.object,
     source: PropTypes.string,
     fetchValue: PropTypes.func,
     writeValue: PropTypes.func,

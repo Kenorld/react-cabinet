@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import SelectInput from './SelectInput';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
-const NullableBooleanInput = ({ input, meta: { touched, error }, label, source, elStyle }) => (
+const NullableBooleanInput = ({ input, label, source, style }) => (
     <SelectInput
         input={input}
         label={label}
@@ -12,16 +12,14 @@ const NullableBooleanInput = ({ input, meta: { touched, error }, label, source, 
             { id: false, name: 'No' },
             { id: true, name: 'Yes' },
         ]}
-        errorText={touched && error}
-        style={elStyle}
+        style={style}
     />
 );
 
 NullableBooleanInput.propTypes = {
-    elStyle: PropTypes.object,
+    style: PropTypes.object,
     input: PropTypes.object,
     label: PropTypes.string,
-    meta: PropTypes.object,
     source: PropTypes.string,
 };
 

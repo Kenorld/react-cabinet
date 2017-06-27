@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { observable } from "mobx"
 import { observer } from 'mobx-react'
 import TextField from 'material-ui/TextField';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 /**
  * An Input component for a string
@@ -29,9 +29,11 @@ class TextInput extends React.Component {
     }
 
     render() {
-        const { fetchValue, label} = this.props
+        const { fetchValue, label, style, type } = this.props
         return <TextField
-            {...collectProps(this.props, TextField.propTypes) }
+            label={label}
+            style={style}
+            type={type}
             value={fetchValue(this)}
             onChange={this.handleChange}
             floatingLabelText={<span>{label}</span>}
@@ -40,6 +42,7 @@ class TextInput extends React.Component {
 }
 
 TextInput.propTypes = {
+    style: PropTypes.object,
     onChange: PropTypes.func,
     label: PropTypes.string,
     name: PropTypes.string,

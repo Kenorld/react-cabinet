@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import Toggle from 'material-ui/Toggle';
-import { collectProps, fetchValue, writeValue } from '../utils'
+import { fetchValue, writeValue } from '../utils'
 
 const styles = {
     block: {
@@ -27,10 +27,10 @@ class BooleanInput extends Component {
         }
     }
     render() {
+        const {labelStyle, style} = this.props
         return <Toggle
-            labelStyle={styles.label}
-            style={styles.toggle}
-            {...collectProps(this.props, Toggle.propTypes) }
+            labelStyle={labelStyle}
+            style={style}
             defaultToggled={this.props.fetchValue(this, false)}
             onToggle={this.handleChange}
         />
@@ -38,6 +38,7 @@ class BooleanInput extends Component {
 }
 
 BooleanInput.propTypes = {
+    labelStyle: PropTypes.object,
     style: PropTypes.object,
     record: PropTypes.object,
     label: PropTypes.string,
