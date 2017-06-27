@@ -29,11 +29,12 @@ class TextInput extends React.Component {
     }
 
     render() {
-        const { fetchValue, label, style, type } = this.props
+        const { fetchValue, label, style, type, disabled} = this.props
         return <TextField
             label={label}
             style={style}
             type={type}
+            disabled={disabled}
             value={fetchValue(this)}
             onChange={this.handleChange}
             floatingLabelText={<span>{label}</span>}

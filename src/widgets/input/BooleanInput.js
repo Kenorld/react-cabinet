@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
@@ -27,8 +27,10 @@ class BooleanInput extends Component {
         }
     }
     render() {
-        const {labelStyle, style} = this.props
+        const { labelStyle, style, label, disabled } = this.props
         return <Toggle
+            label={label}
+            disabled={disabled}
             labelStyle={labelStyle}
             style={style}
             defaultToggled={this.props.fetchValue(this, false)}
@@ -42,6 +44,7 @@ BooleanInput.propTypes = {
     style: PropTypes.object,
     record: PropTypes.object,
     label: PropTypes.string,
+    disabled: PropTypes.bool,
     source: PropTypes.string,
     onChange: PropTypes.func,
     fetchValue: PropTypes.func,

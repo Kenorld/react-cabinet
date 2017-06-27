@@ -35,9 +35,10 @@ class NumberInput extends Component {
     }
 
     render() {
-        const { label, fetchValue, step, style } = this.props;
+        const { label, fetchValue, step, style, disabled } = this.props;
         return (
             <TextField
+                disabled={disabled}
                 style={style}
                 value={fetchValue(this)}
                 onChange={this.handleChange}
@@ -53,6 +54,7 @@ NumberInput.propTypes = {
     style: PropTypes.object,
     label: PropTypes.string,
     name: PropTypes.string,
+    disabled: PropTypes.bool,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
     record: PropTypes.object,

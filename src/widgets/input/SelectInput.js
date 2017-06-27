@@ -73,9 +73,10 @@ class SelectInput extends Component {
     }
 
     render() {
-        const { allowEmpty, choices, source, style } = this.props
+        const { allowEmpty, choices, source, style, disabled } = this.props
         return (
             <SelectField
+            disabled={disabled}
                 value={this.props.fetchValue(this)}
                 menuStyle={{ maxHeight: '41px', overflowY: 'hidden' }}
                 floatingLabelText={label}
@@ -99,6 +100,7 @@ SelectInput.propTypes = {
     choices: PropTypes.arrayOf(PropTypes.object),
     style: PropTypes.object,
     record: PropTypes.object,
+    disabled: PropTypes.bool,
     onChange: PropTypes.func,
     label: PropTypes.string,
     source: PropTypes.string,

@@ -87,7 +87,7 @@ class AutoCompleteInput extends Component {
     }
 
     render() {
-        const { label, source, record, reference } = this.props;
+        const { label, source, record, reference, disabled } = this.props;
         if (record[source] && reference) {
             getStore(reference.entityName).read(record[source]).then((item) => {
                 if (item[reference.text] !== this.selectedText) {
@@ -106,6 +106,7 @@ class AutoCompleteInput extends Component {
                 dataSourceConfig={dataSourceConfig}
                 searchText={this.selectedText}
                 floatingLabelText={label}
+                disabled={disabled}
                 onNewRequest={this.handleNewRequest}
                 onUpdateInput={this.handleUpdateInput}
                 openOnFocus
@@ -117,6 +118,7 @@ class AutoCompleteInput extends Component {
 AutoCompleteInput.propTypes = Object.assign({}, AutoComplete.propTypes, {
     filter: PropTypes.func.isRequired,
     label: PropTypes.string,
+    disabled: PropTypes.bool,
     source: PropTypes.string,
     record: PropTypes.object,
     reference: PropTypes.object,
