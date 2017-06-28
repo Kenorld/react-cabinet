@@ -22,7 +22,7 @@ function create(entityName) {
         return this.records[len - 1]
       }
     }
-    @action list = async (limit, skip, sort, filter, search) => {
+    @action list = async (limit = 20, skip = 0, sort = '', filter = {}, search = '') => {
       return await client.get(getAPIURL(entityName, 'list'), { limit, skip, sort, filter, search }).then(action(`list ${baseName}`, (data) => {
         const records = []
         data.records && data.records.forEach((record) => {

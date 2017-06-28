@@ -71,6 +71,7 @@ NumberInput.defaultProps = {
     onBlur: () => { },
     record: { "_": "" },
     source: "_",
+    disabled: false,
     step: 'any',
     fetchValue: fetchValue,
     writeValue: writeValue

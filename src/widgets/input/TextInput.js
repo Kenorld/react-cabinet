@@ -53,7 +53,6 @@ TextInput.propTypes = {
     fetchValue: PropTypes.func,
     writeValue: PropTypes.func,
     type: PropTypes.string,
-    validation: PropTypes.object,
 };
 
 TextInput.defaultProps = {

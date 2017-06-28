@@ -112,6 +112,7 @@ SelectInput.defaultProps = {
     allowEmpty: false,
     record: { "_": "" },
     source: "_",
+    disabled: false,
     choices: [],
     options: {},
     fetchValue: function(element){

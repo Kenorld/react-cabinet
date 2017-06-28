@@ -102,15 +102,15 @@ export class List extends Component {
     }
 
     setSort = (sort) => {
-        if (this.query.sort === sort) {
-            this.query.sort = '-' + sort
+        if (this.props.query.sort === sort) {
+            this.props.query.sort = '-' + sort
         } else {
-            this.query.sort = sort
+            this.props.query.sort = sort
         }
         this.loadData()
     }
     setPageSkip = (skip) => {
-        this.query.skip = skip
+        this.props.query.skip = skip
         this.loadData()
     }
 
@@ -207,7 +207,8 @@ List.propTypes = {
 }
 List.defaultProps = {
     hasCreate: false,
-    hasRefresh: true
+    hasRefresh: true,
+    query: {...emptyQuery}
 }
 
 export default List;
