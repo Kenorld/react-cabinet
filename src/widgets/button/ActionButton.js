@@ -12,12 +12,13 @@ class ActionButton extends Component {
         const { icon, style = {
             margin: '10px 24px',
             position: 'relative',
-        }, label } = this.props
+        }, label, containerElement } = this.props
         switch (this.props.type) {
             case 'flat':
                 return <FlatButton
                     label={label}
                     icon={icon}
+                    containerElement={containerElement}
                     onTouchTap={this.handlePress}
                     style={style}
                 />
@@ -25,6 +26,7 @@ class ActionButton extends Component {
                 return <RaisedButton
                     label={label}
                     icon={icon}
+                    containerElement={containerElement}
                     onTouchTap={this.handlePress}
                     style={style}
                 />
@@ -38,7 +40,7 @@ ActionButton.propTypes = {
     entityName: PropTypes.string,
     label: PropTypes.string,
     icon: PropTypes.element,
-    container: PropTypes.element,
+    containerElement: PropTypes.element,
     record: PropTypes.object,
 };
 ActionButton.defaultProps = {
