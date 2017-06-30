@@ -22,7 +22,7 @@
     "test:watch": "cross-env NODE_ENV=test karma start --autoWatch=true --singleRun=false --reporters=mocha,coverage",
     "example": "cd example && webpack-dev-server --hot --inline --config ./webpack.config.js"
   },
-  "repository": "https://github.com/chrislearn/react-cabinet",
+  "repository": "https://github.com/kenorld/react-cabinet",
   "keywords": [],
   "author": "Chrislearn Young <chris@acroidea.com> (http://chrislearn.im)",
   "devDependencies": {
