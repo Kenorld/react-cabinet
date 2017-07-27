@@ -12,7 +12,7 @@ class ActionButton extends Component {
         const { icon, style = {
             margin: '10px 24px',
             position: 'relative',
-        }, label, containerElement } = this.props
+        }, label, containerElement, primary } = this.props
         switch (this.props.type) {
             case 'flat':
                 return <FlatButton
@@ -20,6 +20,7 @@ class ActionButton extends Component {
                     icon={icon}
                     containerElement={containerElement}
                     onTouchTap={this.handlePress}
+                    primary = {primary}
                     style={style}
                 />
             case 'raised':
@@ -28,6 +29,7 @@ class ActionButton extends Component {
                     icon={icon}
                     containerElement={containerElement}
                     onTouchTap={this.handlePress}
+                    primary = {primary}
                     style={style}
                 />
         }
