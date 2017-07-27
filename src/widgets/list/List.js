@@ -97,7 +97,7 @@ export class List extends Component {
         this.isLoading = true
         const data = await store.list(limit, skip, sort, filter, search)
         this.records = data.records
-        this.totalCount = data.total_count
+        this.totalCount = data.rawData.total_count
         this.isLoading = false
     }
 
