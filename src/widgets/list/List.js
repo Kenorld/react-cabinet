@@ -120,11 +120,11 @@ export class List extends Component {
 
     handleFilterValueChange = (event, filterName, value) => {
         if (!filterName || filterName === '_') {
-            this.query.search = value
+            this.props.query.search = value
         } else {
-            this.query.filter[filterName] = value
+            this.props.query.filter[filterName] = value
         }
-        this.query.skip = 0
+        this.props.query.skip = 0
         if (this.props.urlBinded) {
             const store = getStore(this.props.entityName)
             store.lastListUrl = appendQueryToURL(location.href, this.query)
