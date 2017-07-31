@@ -3,7 +3,9 @@ import { CardActions } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import CreateButton from '../button/CreateButton';
+import DeleteAllButton from '../button/DeleteAllButton';
 import { getStore } from '../../stores'
+import { observer } from 'mobx-react'
 
 const cardActionStyle = {
     zIndex: 2,
@@ -11,12 +13,21 @@ const cardActionStyle = {
     float: 'right',
 };
 
-const Actions = ({ entityName, filters, shownFilters, filterValues, hasCreate, refresh, searchValue, showFilter }) => (
-    <CardActions style={cardActionStyle}>
-        {filters && React.cloneElement(filters, { entityName, showFilter, shownFilters, searchValue, filterValues, context: 'button' }) }
-        {hasCreate && <CreateButton entityName={entityName} />}
-        {refresh && <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh />} />}
-    </CardActions>
-);
+@observer
+export default class Actions extends Component{
+    constructor(props){
+        super(props);
+    }
 
-export default Actions;
+    render(){
+        const {entityName, filters, shownFilters, filterValues, selectedRecords, clearDeleteRecords, hasCreate, refresh, searchValue, showFilter} = this.props
+
+
+        return <CardActions style={cardActionStyle}>
+            {filters && React.cloneElement(filters, { entityName, showFilter, shownFilters, searchValue, filterValues, context: 'button' }) }
+            {(selectedRecords.length>0) && <DeleteAllButton entityName={entityName} deleteRecords={selectedRecords} clearDeleteRecordsHandle={clearDeleteRecords}/>}
+            {hasCreate && <CreateButton entityName={entityName} />}
+            {refresh && <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh />} />}
+        </CardActions>
+    }
+};

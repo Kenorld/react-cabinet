@@ -32,6 +32,7 @@ export class List extends Component {
     @observable totalCount = 0
     @observable records = []
     @observable isLoading = true
+    @observable selectedRecords = [];
 
 
     query = { ...emptyQuery }
@@ -40,6 +41,9 @@ export class List extends Component {
         super(props);
         this.state = {}
         this.debouncedLoadData = debounce(this.loadData, 300)
+
+        this.handleSelcetFun = this.handleSelect.bind(this);
+        this.handleClearDeleteRecords = this.clearDeleteRecords.bind(this);
     }
 
     updateQuery(props) {
@@ -141,6 +145,22 @@ export class List extends Component {
         this.setState({ [filterName]: false })
         this.handleFilterValueChange(null, filterName, undefined);
     }
+    
+    handleSelect = (selectedRows) =>{
+        if (selectedRows === 'all'){
+            this.selectedRecords = this.records
+        } else if (selectedRows === 'none') {
+            this.selectedRecords = []
+        }else{
+            this.selectedRecords = selectedRows.map((index)=>{
+                return this.records[index]
+            })
+        }
+    }
+
+    clearDeleteRecords = () =>{
+        this.selectedRecords = [];
+    }
 
     render() {
         let node = null
@@ -153,7 +173,7 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort }
+            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelect: this.handleSelcetFun}
             node = React.cloneElement(this.props.children, props)
         }
         const refresh = hasRefresh ? (this.props.refresh || this.refresh) : null
@@ -164,6 +184,8 @@ export class List extends Component {
                     filters,
                     filterValues,
                     searchValue: this.query.search,
+                    selectedRecords: this.selectedRecords,
+                    clearDeleteRecords: this.handleClearDeleteRecords,
                     hasCreate,
                     shownFilters: this.state,
                     showFilter: this.showFilter,

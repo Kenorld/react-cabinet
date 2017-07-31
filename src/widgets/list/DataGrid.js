@@ -89,26 +89,31 @@ class DataGrid extends Component {
     getSelectedRecords(){
         return this.selectedRecords
     }
-    handleRowSelection = (selectedRows)=>{
-        if (selectedRows === 'all'){
-            this.selectedRecords = this.props.records
-        } else if (selectedRows === 'none') {
-            this.selectedRecords = []
-        }else{
-            this.selectedRecords = selectedRows.map((index)=>{
-                return this.props.records[index]
-            })
-        }
-    }
+    // 07/31/2017
+    // update bulk action, remove this function from DataGrid
+    // new function locate at List
+    // ------------------------------------------------------------
+    // handleRowSelection = (selectedRows)=>{
+    //     if (selectedRows === 'all'){
+    //         this.selectedRecords = this.props.records
+    //     } else if (selectedRows === 'none') {
+    //         this.selectedRecords = []
+    //     }else{
+    //         this.selectedRecords = selectedRows.map((index)=>{
+    //             return this.props.records[index]
+    //         })
+    //     }
+    // }
+    // ------------------------------------------------------------
 
     render() {
-        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, enableSelectAll, allRowsSelected, multiSelectable, selectable } = this.props;
+        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, enableSelectAll, allRowsSelected, multiSelectable, selectable, handleSelect} = this.props;
         return (
             <Table style={styles.table} 
             allRowsSelected={allRowsSelected}
             selectable={selectable}
             multiSelectable={multiSelectable}
-            onRowSelection={this.handleRowSelection}>
+            onRowSelection={handleSelect}>
                 <TableHeader displaySelectAll={enableSelectAll&&multiSelectable} enableSelectAll={enableSelectAll} adjustForCheckbox={multiSelectable||selectable}>
                     <TableRow style={styles.tr}>
                         {React.Children.map(children, (field, index) => (
