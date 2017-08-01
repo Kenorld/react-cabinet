@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { observable, ObservableMap, observe, toJS, reaction, computed } from "mobx"
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardText } from 'material-ui/Card';
-import debounce from 'lodash.debounce';
 import Title from '../layout/Title';
 import DefaultPagination from './Pagination';
 import DefaultActions from './Actions';
@@ -40,7 +39,6 @@ export class List extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-        this.debouncedLoadData = debounce(this.loadData, 300)
 
         this.handleSelcetFun = this.handleSelect.bind(this);
         this.handleClearDeleteRecords = this.clearDeleteRecords.bind(this);
@@ -54,6 +52,8 @@ export class List extends Component {
                 this.query[i] = newQuery[i]
             }
         }
+    }
+    syncWithUrl(props) {
         if (props.urlBinded && this.currentHref != location.href) {
             const params = new URL(location.href).searchParams
             if (params) {
@@ -71,9 +71,10 @@ export class List extends Component {
         }
     }
     componentDidMount() {
+        this.updateQuery(this.props)
         this.loadData();
         const store = getStore(this.props.entityName)
-        this.loadReaction = reaction(() => store.records.map((record)=>record.id), ids=>this.loadData())
+        this.loadReaction = reaction(() => store.records.map((record) => record.id), ids => this.loadData())
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.query != nextProps.query) {
@@ -81,10 +82,10 @@ export class List extends Component {
         } else if (this.props.entityName !== nextProps.entityName) {
             this.loadData(nextProps)
         } else if (nextProps.urlBinded && this.currentHref != location.href) {
-            this.debouncedLoadData(nextProps)
+            this.loadData(nextProps)
         }
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.loadReaction()
     }
 
@@ -95,7 +96,10 @@ export class List extends Component {
     loadData = async (props = this.props) => {
         if (!props.entityName) return
 
-        this.updateQuery(props)
+        if (props.urlBinded) {
+            this.updateQuery(props)
+            this.syncWithUrl(props)
+        }
         const { limit, skip, sort, filter, search } = this.query;
         const store = getStore(props.entityName)
         this.isLoading = true
@@ -120,17 +124,17 @@ export class List extends Component {
 
     handleFilterValueChange = (event, filterName, value) => {
         if (!filterName || filterName === '_') {
-            this.props.query.search = value
+            this.query.search = value
         } else {
-            this.props.query.filter[filterName] = value
+            this.query.filter[filterName] = value
         }
-        this.props.query.skip = 0
+        this.query.skip = 0
         if (this.props.urlBinded) {
             const store = getStore(this.props.entityName)
             store.lastListUrl = appendQueryToURL(location.href, this.query)
             this.context.router.history.push(store.lastListUrl)
         } else {
-            this.debouncedLoadData()
+            this.loadData()
         }
     }
 
@@ -145,20 +149,20 @@ export class List extends Component {
         this.setState({ [filterName]: false })
         this.handleFilterValueChange(null, filterName, undefined);
     }
-    
-    handleSelect = (selectedRows) =>{
-        if (selectedRows === 'all'){
+
+    handleSelect = (selectedRows) => {
+        if (selectedRows === 'all') {
             this.selectedRecords = this.records
         } else if (selectedRows === 'none') {
             this.selectedRecords = []
-        }else{
-            this.selectedRecords = selectedRows.map((index)=>{
+        } else {
+            this.selectedRecords = selectedRows.map((index) => {
                 return this.records[index]
             })
         }
     }
 
-    clearDeleteRecords = () =>{
+    clearDeleteRecords = () => {
         this.selectedRecords = [];
     }
 
@@ -173,7 +177,7 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelect: this.handleSelcetFun}
+            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelect: this.handleSelcetFun }
             node = React.cloneElement(this.props.children, props)
         }
         const refresh = hasRefresh ? (this.props.refresh || this.refresh) : null
@@ -230,7 +234,7 @@ List.propTypes = {
 List.defaultProps = {
     hasCreate: false,
     hasRefresh: true,
-    query: {...emptyQuery}
+    query: { ...emptyQuery }
 }
 
 export default List;

@@ -6,7 +6,16 @@ import MobxReactForm from 'mobx-react-form';
 import { CardText } from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton';
 import ActionHide from 'material-ui/svg-icons/action/highlight-off';
+import debounce from 'lodash.debounce'
 
+function changeHandler(form, element, e, source, value) {
+    if (form.props.onChange) {
+        form.props.onChange(e, element.props.source, value)
+    }
+    if (element.props.onChange) {
+        element.props.onChange(e, element.props.source, value)
+    }
+}
 @observer
 export class FilterForm extends Component {
     @observable record
@@ -21,16 +30,16 @@ export class FilterForm extends Component {
     }
 
     handleHide = (event) => this.props.hideFilter(event.currentTarget.dataset.key);
+    delayChangeHandler = debounce(changeHandler, 500)
 
     render() {
         const { entityName } = this.props;
         const createChangeHandler = (element) => {
             return (e, source, value) => {
-                if (this.props.onChange) {
-                    this.props.onChange(e, element.props.source, value)
-                }
-                if (element.props.onChange) {
-                    element.props.onChange(e, element.props.source, value)
+                if (source === '_'){
+                    this.delayChangeHandler(this, element, e, source, value)
+                }else{
+                    changeHandler(this, element, e, source, value)
                 }
             }
         }
@@ -39,7 +48,7 @@ export class FilterForm extends Component {
             let value = source === '_' ? this.props.searchValue : this.props.initialValues[filterElement.props.source]
             return {
                 entityName: entityName,
-                record: { [source]: value },
+                record: observable({ [source]: value }),
                 onChange: createChangeHandler(filterElement)
             }
         }
