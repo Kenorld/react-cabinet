@@ -41,7 +41,7 @@ export class Edit extends Component {
     loadData(entityName = this.props.entityName, recordId = this.props.recordId) {
         this.isLoading = true
         getStore(this.props.entityName).read(recordId).then((record) => {
-            this.record = record
+            this.record = this.props.editOnShadow ? observable(mobx.toJS(record)) : record
             this.isLoading = false
         })
     }
@@ -51,12 +51,12 @@ export class Edit extends Component {
         this.loadData();
     }
 
-    handleSubmit = (record) => {
+    handleSubmit = () => {
         if (this.props.beforeSubmit){
             this.props.beforeSubmit(this.props)
         }
         const store = getStore(this.props.entityName)
-        store.update(record.id, mobx.toJS(record)).then((data)=>{
+        store.update(this.record.id, mobx.toJS(this.record)).then((data)=>{
             if (store.lastListUrl) {
                 this.context.router.history.push(store.lastListUrl)
             } else {
@@ -65,6 +65,7 @@ export class Edit extends Component {
             if (this.props.afterSubmit){
                 this.props.afterSubmit(this.props)
             }
+            this.record = this.props.editOnShadow ? observable(mobx.toJS(data)) : data
             stores.notification.notify('Record updated!')
         })
     }
@@ -89,7 +90,7 @@ export class Edit extends Component {
             {this.record && React.cloneElement(children, {
                 onSubmit: this.handleSubmit,
                 entityName,
-                record: { ...this.record },
+                record: this.record,
             })}
             {!this.record && <CardText>No Data!</CardText>}
         </Card>
@@ -102,12 +103,16 @@ Edit.propTypes = {
     data: PropTypes.object,
     hasDelete: PropTypes.bool,
     hasShow: PropTypes.bool,
+    editOnShadow: PropTypes.bool,
     recordId: PropTypes.string.isRequired,
     entityName: PropTypes.string.isRequired,
     title: PropTypes.any,
     beforeSubmit: PropTypes.func,
     afterSubmit: PropTypes.func,
 };
+Edit.defaultProps = {
+    editOnShadow: true
+}
 
 
 export default Edit;

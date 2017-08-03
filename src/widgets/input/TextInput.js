@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { observable } from "mobx"
 import { observer } from 'mobx-react'
@@ -20,7 +20,7 @@ import { fetchValue, writeValue } from '../utils'
  * The object passed as `options` props is passed to the material-ui <TextField> component
  */
 @observer
-class TextInput extends React.Component {
+class TextInput extends Component {
     handleChange = (event) => {
         this.props.writeValue(this, event.target.value)
         if (this.props.onChange) {
@@ -53,6 +53,7 @@ TextInput.propTypes = {
     fetchValue: PropTypes.func,
     writeValue: PropTypes.func,
     type: PropTypes.string,
+    convert: PropTypes.object,
 };
 
 TextInput.defaultProps = {
@@ -61,7 +62,15 @@ TextInput.defaultProps = {
     disabled: false,
     type: 'text',
     fetchValue: fetchValue,
-    writeValue: writeValue
+    writeValue: writeValue,
+    // convert: {
+    //     fetch: function(value){
+    //         return value
+    //     },
+    //     write: function(value){
+    //         return value
+    //     }
+    // }
 };
 
 export default TextInput;

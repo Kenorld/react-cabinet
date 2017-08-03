@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { computed } from 'mobx'
 import { observer } from 'mobx-react'
-import { getValues } from '../utils'
+import { fetchValue } from '../utils'
 
 @observer
 class TextField extends React.Component {
     @computed get value() {
-        const { convert, record, source } = this.props
-        return convert.apply(this, getValues(record, source))
+        return fetchValue(this)
     }
     render() {
         const { addLabel, label } = this.props
@@ -26,15 +25,15 @@ TextField.propTypes = {
     label: PropTypes.string,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
-    convert: PropTypes.func.isRequired
+    convert: PropTypes.oneOf([PropTypes.func,PropTypes.object])
 };
 
 TextField.defaultProps = {
     addLabel: false,
     label: '',
-    convert: function (value) {
-        return value
-    }
+    // convert: function (value) {
+    //     return value
+    // }
 };
 
 export default TextField;

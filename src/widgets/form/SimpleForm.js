@@ -9,21 +9,8 @@ import { SaveButton } from '../button';
 class DefaultForm extends MobxReactForm { }
 @observer
 export default class SimpleForm extends React.Component {
-    @observable record
-    componentWillMount() {
-       this.record = this.props.record
-    }
-    // handleFieldChange = (e, source, value) => {
-    //     this.record[source] = value
-    // }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.record !== this.props.record) {
-            this.record = nextProps.record
-        }
-    }
     render() {
-        let { children, onSubmit, invalid, form, fields, showToolbar, plugins } = this.props
+        let { record, children, onSubmit, invalid, form, fields, showToolbar, plugins } = this.props
         const submitHandler = (e) => {
             if (onSubmit) {
                 onSubmit(this.record)
@@ -43,9 +30,9 @@ export default class SimpleForm extends React.Component {
         }
         return <form onSubmit={submitHandler}>
             <div style={{ padding: '0 1em 1em 1em' }}>
-                {React.Children.map(this.props.children, input => (
+                {React.Children.map(children, input => (
                     <div key={input.props.source} style={input.props.style}>
-                        {React.cloneElement(input, { record: this.record, source: input.props.source, onChange: createChangeHandler(input) })}
+                        {React.cloneElement(input, { record: record, source: input.props.source, onChange: createChangeHandler(input) })}
                     </div>
                 ))}
             </div>
