@@ -12,7 +12,7 @@ export function getValues(record, source) {
 }
 
 export function fetchValue(element, defaultValue = "") {
-  let values = getValues(element.record || element.props.record, element.props.source) || ['']
+  let values = getValues(element.record || element.props.record, element.props.source) || []
   let value = defaultValue
   if (element.props.convert) {
     if (element.props.convert.fetch) {
@@ -20,6 +20,8 @@ export function fetchValue(element, defaultValue = "") {
     } else {
       value = element.props.convert.apply(element, values)
     }
+  }else if (values.length == 1){
+    value = values[0]
   }else{
     value = values.join(', ')
   }
