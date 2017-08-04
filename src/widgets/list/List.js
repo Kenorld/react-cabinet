@@ -156,9 +156,13 @@ export class List extends Component {
         } else if (selectedRows === 'none') {
             this.selectedRecords = []
         } else {
-            this.selectedRecords = selectedRows.map((index) => {
-                return this.records[index]
-            })
+            if(this.selectedRecords.length == this.records.length){
+                this.selectedRecords = []
+            }else{
+                this.selectedRecords = selectedRows.map((index) => {
+                    return this.records[index]
+                })
+            }
         }
     }
 
