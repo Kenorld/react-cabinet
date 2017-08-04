@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import mobx, { observable } from "mobx"
+import { observable, toJS } from "mobx"
 import { observer } from 'mobx-react'
 import { Card, CardTitle } from 'material-ui/Card';
 import inflection from 'inflection';

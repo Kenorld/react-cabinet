@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import mobx, { observable } from "mobx"
+import { observable, toJS } from "mobx"
 import { observer } from 'mobx-react'
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import inflection from 'inflection';
@@ -41,7 +41,7 @@ export class Edit extends Component {
     loadData(entityName = this.props.entityName, recordId = this.props.recordId) {
         this.isLoading = true
         getStore(this.props.entityName).read(recordId).then((record) => {
-            this.record = this.props.editOnShadow ? observable(mobx.toJS(record)) : record
+            this.record = this.props.editOnShadow ? observable(toJS(record)) : record
             this.isLoading = false
         })
     }
@@ -56,7 +56,7 @@ export class Edit extends Component {
             this.props.beforeSubmit(this.props)
         }
         const store = getStore(this.props.entityName)
-        store.update(this.record.id, mobx.toJS(this.record)).then((data)=>{
+        store.update(this.record.id, toJS(this.record)).then((data)=>{
             if (store.lastListUrl) {
                 this.context.router.history.push(store.lastListUrl)
             } else {
@@ -65,7 +65,7 @@ export class Edit extends Component {
             if (this.props.afterSubmit){
                 this.props.afterSubmit(this.props)
             }
-            this.record = this.props.editOnShadow ? observable(mobx.toJS(data)) : data
+            this.record = this.props.editOnShadow ? observable(toJS(data)) : data
             stores.notification.notify('Record updated!')
         })
     }
