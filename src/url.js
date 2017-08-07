@@ -37,11 +37,13 @@ export function getUIURL(entityName, action, id) {
     return joinURLPaths(options.uiRootURL, `${baseName}/${id}/delete`)
   }else if (action === 'create'){
     return joinURLPaths(options.uiRootURL, `${baseName}/create`)
-  }
-  if (id !== undefined) {
+  }else if (action === 'edit'){
     return joinURLPaths(options.uiRootURL, `${baseName}/${id}`)
   }
-  return joinURLPaths(options.uiRootURL, `${baseName}`)
+  if (id !== undefined) {
+    return joinURLPaths(options.uiRootURL, `${baseName}/${id}/${action}`)
+  }
+  return joinURLPaths(options.uiRootURL, `${baseName}/${action}`)
 }
 export function getAPIURL(entityName, action, id) {
   const baseName = inflection.pluralize(entityName)
