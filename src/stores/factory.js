@@ -1,9 +1,9 @@
-import { observable, action, computed, runInAction,extendObservable } from "mobx"
+import { observable, action, computed, runInAction, extendObservable } from "mobx"
 import inflection from 'inflection';
 import client from '../client'
-import {getAPIURL} from '../url'
+import { getAPIURL } from '../url'
 
-function create(entityName) {
+function create(entityName, defaultFields) {
   const baseName = inflection.pluralize(entityName)
   const classDefine = class {
     @observable creatingRecord = {}
@@ -16,9 +16,9 @@ function create(entityName) {
     @action merge(record) {
       const exist = this.find(record.id)
       if (exist) {
-        return extendObservable(exist, record)
+        return extendObservable(exist, fillDefault(record))
       } else {
-        const len = this.records.push(record)
+        const len = this.records.push(fillDefault(record))
         return this.records[len - 1]
       }
     }
@@ -28,7 +28,7 @@ function create(entityName) {
         data.records && data.records.forEach((record) => {
           records.push(this.merge(record))
         })
-        return {records, rawData: data}
+        return { records, rawData: data }
       }))
     }
     @action create = async (record) => {
@@ -72,9 +72,29 @@ function create(entityName) {
       }))
     }
   }
+  function fillDefault(record) {
+    if (defaultFields) {
+      if (typeof defaultFields === 'object') {
+        extendRecord(record, defaultFields)
+      } else {
+        defaultFields(record)
+      }
+    }
+    return record
+  }
   return classDefine
 }
 
+function extendRecord(record, defaultFields) {
+  for (let f in defaultFields) {
+    if (record[f] == null) {
+      record[f] = defaultFields[f]
+    } else if (typeof record[f] === 'object' && typeof defaultFields[f] === 'object') {
+      extendRecord(record[f], defaultFields[f])
+    }
+  }
+  return record
+}
 
 const exported = {
   create: create
