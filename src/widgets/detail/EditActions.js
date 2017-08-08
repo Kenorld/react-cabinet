@@ -10,10 +10,10 @@ const cardActionStyle = {
     float: 'right',
 };
 
-const EditActions = ({ entityName, record, hasDelete, hasShow, refresh }) => (
+const EditActions = ({ entityName, record, hasDelete, hasList, hasShow, refresh }) => (
     <CardActions style={cardActionStyle}>
         {hasShow && <ShowButton entityName={entityName} record={record} />}
-        <ListButton entityName={entityName} />
+        {hasList && <ListButton entityName={entityName} />}
         {hasDelete && <DeleteButton entityName={entityName} record={record} />}
         <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh />} />
     </CardActions>
