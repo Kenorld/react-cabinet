@@ -35,3 +35,6 @@ dist/
 # IDE/Editor data
 .idea/
 /lib
+
+# Bash
+*.sh
