@@ -23,11 +23,6 @@ export class Edit extends Component {
     @observable record = null
     @observable isLoading = true
 
-    constructor(props) {
-        super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
     componentDidMount() {
         this.loadData();
     }

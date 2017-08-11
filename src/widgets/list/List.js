@@ -33,9 +33,7 @@ export class List extends Component {
     @observable isLoading = true
     @observable selectedRecords = [];
 
-
     query = { ...emptyQuery }
-    currentHref
     constructor(props) {
         super(props);
         this.state = {}
@@ -45,7 +43,7 @@ export class List extends Component {
     }
 
     updateQuery(props) {
-        this.query = { ...emptyQuery }
+        this.query = { ...(this.query || emptyQuery) }
         const newQuery = props.query || {}
         for (const i in this.query) {
             if (newQuery[i] != null) {
@@ -53,8 +51,16 @@ export class List extends Component {
             }
         }
     }
-    syncWithUrl(props) {
-        if (props.urlBinded && this.currentHref != location.href) {
+    syncQueryToUrl() {
+        if (this.props.urlBinded) {
+            const store = getStore(this.props.entityName)
+            store.lastListUrl = appendQueryToURL(location.href, this.query)
+            this.context.router.history.push(store.lastListUrl)
+        }
+    }
+    collectQuery(props) {
+        this.query = { ...emptyQuery, ...props.query }
+        if (props.urlBinded) {
             const params = new URL(location.href).searchParams
             if (params) {
                 for (const i in this.query) {
@@ -67,11 +73,10 @@ export class List extends Component {
                     }
                 }
             }
-            this.currentHref = location.href
         }
     }
     componentDidMount() {
-        this.updateQuery(this.props)
+        this.collectQuery(this.props)
         this.loadData();
         const store = getStore(this.props.entityName)
         this.loadReaction = reaction(() => store.records.map((record) => record.id), ids => this.loadData())
@@ -80,8 +85,6 @@ export class List extends Component {
         if (this.props.query != nextProps.query) {
             this.loadData(nextProps);
         } else if (this.props.entityName !== nextProps.entityName) {
-            this.loadData(nextProps)
-        } else if (nextProps.urlBinded && this.currentHref != location.href) {
             this.loadData(nextProps)
         }
     }
@@ -96,10 +99,6 @@ export class List extends Component {
     loadData = async (props = this.props) => {
         if (!props.entityName) return
 
-        if (props.urlBinded) {
-            this.updateQuery(props)
-            this.syncWithUrl(props)
-        }
         const { limit, skip, sort, filter, search } = this.query;
         const store = getStore(props.entityName)
         this.isLoading = true
@@ -110,15 +109,17 @@ export class List extends Component {
     }
 
     setSort = (sort) => {
-        if (this.props.query.sort === sort) {
-            this.props.query.sort = '-' + sort
+        if (this.query.sort === sort) {
+            this.query.sort = '-' + sort
         } else {
-            this.props.query.sort = sort
+            this.query.sort = sort
         }
+        this.syncQueryToUrl()
         this.loadData()
     }
     setPageSkip = (skip) => {
-        this.props.query.skip = skip
+        this.query.skip = skip
+        this.syncQueryToUrl()
         this.loadData()
     }
 
@@ -129,13 +130,8 @@ export class List extends Component {
             this.query.filter[filterName] = value
         }
         this.query.skip = 0
-        if (this.props.urlBinded) {
-            const store = getStore(this.props.entityName)
-            store.lastListUrl = appendQueryToURL(location.href, this.query)
-            this.context.router.history.push(store.lastListUrl)
-        } else {
-            this.loadData()
-        }
+        this.syncQueryToUrl()
+        this.loadData()
     }
 
     showFilter = (filterName, defaultValue) => {
@@ -156,9 +152,9 @@ export class List extends Component {
         } else if (selectedRows === 'none') {
             this.selectedRecords = []
         } else {
-            if(this.selectedRecords.length == this.records.length){
+            if (this.selectedRecords.length == this.records.length) {
                 this.selectedRecords = []
-            }else{
+            } else {
                 this.selectedRecords = selectedRows.map((index) => {
                     return this.records[index]
                 })

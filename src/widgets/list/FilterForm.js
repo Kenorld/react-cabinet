@@ -30,17 +30,12 @@ export class FilterForm extends Component {
     }
 
     handleHide = (event) => this.props.hideFilter(event.currentTarget.dataset.key);
-    delayChangeHandler = debounce(changeHandler, 500)
 
     render() {
         const { entityName } = this.props;
         const createChangeHandler = (element) => {
             return (e, source, value) => {
-                if (source === '_'){
-                    this.delayChangeHandler(this, element, e, source, value)
-                }else{
-                    changeHandler(this, element, e, source, value)
-                }
+                changeHandler(this, element, e, source, value)
             }
         }
         const getFilterElementProps = (filterElement) => {
