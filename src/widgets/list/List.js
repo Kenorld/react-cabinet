@@ -158,7 +158,7 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            const props = { records: this.records, ref:(dg)=>{this.dataGrid = dg}, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelectRecord: this.handleSelectRecord }
+            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelectRecord: this.handleSelectRecord }
             node = React.cloneElement(this.props.children, props)
         }
         const refresh = hasRefresh ? (this.props.refresh || this.refresh) : null
