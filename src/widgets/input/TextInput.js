@@ -53,7 +53,7 @@ TextInput.propTypes = {
     fetchValue: PropTypes.func,
     writeValue: PropTypes.func,
     type: PropTypes.string,
-    convert: PropTypes.object,
+    convert: PropTypes.oneOfType([PropTypes.func,PropTypes.object])
 };
 
 TextInput.defaultProps = {
