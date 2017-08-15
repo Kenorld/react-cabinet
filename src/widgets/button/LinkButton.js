@@ -9,10 +9,7 @@ class LinkButton extends Component {
         }
     }
     render() {
-        const { icon, style = {
-            margin: '10px 24px',
-            position: 'relative',
-        }, label, containerElement, primary, href } = this.props
+        const { icon, style, label, containerElement, primary, href } = this.props
         switch (this.props.type) {
             case 'flat':
                 return <FlatButton

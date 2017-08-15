@@ -17,7 +17,7 @@ class SaveButton extends Component {
     }
 
     render() {
-        const { saving, label='Save', raised = true } = this.props;
+        const { saving, label='Save', style, raised = true } = this.props;
         return raised
             ? <RaisedButton
                 type="submit"
@@ -25,10 +25,7 @@ class SaveButton extends Component {
                 icon={saving ? <CircularProgress size={25} thickness={2} /> : <ContentSave />}
                 onClick={this.handleClick}
                 primary={!saving}
-                style={{
-                    margin: '10px 24px',
-                    position: 'relative',
-                }}
+                style={style}
             />
             : <FlatButton
                 type="submit"
@@ -36,16 +33,14 @@ class SaveButton extends Component {
                 icon={saving ? <CircularProgress size={25} thickness={2} /> : <ContentSave />}
                 onClick={this.handleClick}
                 primary={!saving}
-                style={{
-                    margin: '10px 24px',
-                    position: 'relative',
-                }}
+                style={style}
             />
         ;
     }
 }
 
 SaveButton.propTypes = {
+    style: PropTypes.object,
     label: PropTypes.string,
     raised: PropTypes.bool,
     saving: PropTypes.bool,
