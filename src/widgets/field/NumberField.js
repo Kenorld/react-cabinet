@@ -56,7 +56,7 @@ NumberField.propTypes = {
     options: PropTypes.object,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
-    convert: PropTypes.func.isRequired,
+    convert: PropTypes.oneOfType([PropTypes.func,PropTypes.object]),
 };
 
 NumberField.defaultProps = {

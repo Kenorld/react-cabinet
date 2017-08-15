@@ -25,7 +25,7 @@ TextField.propTypes = {
     label: PropTypes.string,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
-    convert: PropTypes.oneOf([PropTypes.func,PropTypes.object])
+    convert: PropTypes.oneOfType([PropTypes.func,PropTypes.object])
 };
 
 TextField.defaultProps = {

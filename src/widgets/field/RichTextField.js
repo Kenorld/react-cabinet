@@ -25,15 +25,15 @@ RichTextField.propTypes = {
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
     stripTags: PropTypes.bool,
-    convert: PropTypes.func.isRequired
+    convert: PropTypes.oneOfType([PropTypes.func,PropTypes.object])
 };
 
 RichTextField.defaultProps = {
     addLabel: true,
     stripTags: false,
-    convert: function (value) {
-        return value
-    }
+    // convert: function (value) {
+    //     return value
+    // }
 };
 
 export default RichTextField;

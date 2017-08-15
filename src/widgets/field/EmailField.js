@@ -17,7 +17,7 @@ EmailField.propTypes = {
     label: PropTypes.string,
     record: PropTypes.object,
     source: PropTypes.string.isRequired,
-    convert: PropTypes.func.isRequired
+    convert: PropTypes.oneOfType([PropTypes.func,PropTypes.object])
 };
 
 EmailField.defaultProps = {
