@@ -8,6 +8,7 @@ import DefaultPagination from './Pagination';
 import DefaultActions from './Actions';
 import stores, { getStore } from '../../stores'
 import { appendQueryToURL } from '../../url'
+import DataGrid from './DataGrid'
 
 const { queryStore } = stores
 const emptyQuery = {
@@ -27,19 +28,15 @@ export class List extends Component {
             }).isRequired
         }).isRequired
     }
-
+    @observable selectedRecords = []
     @observable totalCount = 0
     @observable records = []
     @observable isLoading = true
-    @observable selectedRecords = [];
 
     query = { ...emptyQuery }
     constructor(props) {
         super(props);
         this.state = {}
-
-        this.handleSelcetFun = this.handleSelect.bind(this);
-        this.handleClearDeleteRecords = this.clearDeleteRecords.bind(this);
     }
 
     updateQuery(props) {
@@ -146,24 +143,8 @@ export class List extends Component {
         this.handleFilterValueChange(null, filterName, undefined);
     }
 
-    handleSelect = (selectedRows) => {
-        if (selectedRows === 'all') {
-            this.selectedRecords = this.records
-        } else if (selectedRows === 'none') {
-            this.selectedRecords = []
-        } else {
-            if (this.selectedRecords.length == this.records.length) {
-                this.selectedRecords = []
-            } else {
-                this.selectedRecords = selectedRows.map((index) => {
-                    return this.records[index]
-                })
-            }
-        }
-    }
-
-    clearDeleteRecords = () => {
-        this.selectedRecords = [];
+    handleSelectRecord = (selectedRecords) => {
+        this.selectedRecords = selectedRecords
     }
 
     render() {
@@ -177,7 +158,7 @@ export class List extends Component {
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
-            const props = { records: this.records, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelect: this.handleSelcetFun }
+            const props = { records: this.records, ref:(dg)=>{this.dataGrid = dg}, entityName, currentSort: this.query.sort, setSort: this.setSort, handleSelectRecord: this.handleSelectRecord }
             node = React.cloneElement(this.props.children, props)
         }
         const refresh = hasRefresh ? (this.props.refresh || this.refresh) : null
@@ -188,8 +169,7 @@ export class List extends Component {
                     filters,
                     filterValues,
                     searchValue: this.query.search,
-                    selectedRecords: this.selectedRecords,
-                    clearDeleteRecords: this.handleClearDeleteRecords,
+                    deleteRecords: this.selectedRecords,
                     hasCreate,
                     shownFilters: this.state,
                     showFilter: this.showFilter,

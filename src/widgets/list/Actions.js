@@ -20,12 +20,11 @@ export default class Actions extends Component{
     }
 
     render(){
-        const {entityName, filters, shownFilters, filterValues, selectedRecords, clearDeleteRecords, hasCreate, refresh, searchValue, showFilter} = this.props
-
+        const {entityName, filters, shownFilters, filterValues, deleteRecords, hasCreate, hasDelete, refresh, searchValue, showFilter} = this.props
 
         return <CardActions style={cardActionStyle}>
             {filters && React.cloneElement(filters, { entityName, showFilter, shownFilters, searchValue, filterValues, context: 'button' }) }
-            {(selectedRecords.length>0) && <DeleteAllButton entityName={entityName} deleteRecords={selectedRecords} clearDeleteRecordsHandle={clearDeleteRecords}/>}
+            {hasDelete && deleteRecords.length>0 && <DeleteAllButton entityName={entityName} deleteRecords={deleteRecords}/>}
             {hasCreate && <CreateButton entityName={entityName} />}
             {refresh && <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh />} />}
         </CardActions>

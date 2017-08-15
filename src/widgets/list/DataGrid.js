@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import {PropTypes as MobxTypes} from 'mobx-react'
+import { PropTypes as MobxTypes } from 'mobx-react'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
@@ -86,35 +86,30 @@ class DataGrid extends Component {
         this.props.setSort(event.currentTarget.dataset.sort);
     }
 
-    getSelectedRecords(){
-        return this.selectedRecords
+    handleRowSelection = (selectedRows) => {
+        if (selectedRows === 'all') {
+            this.selectedRecords = this.props.records
+        } else if (selectedRows === 'none') {
+            this.selectedRecords = []
+        } else {
+            this.selectedRecords = selectedRows.map((index) => {
+                return this.props.records[index]
+            })
+        }
+        if (this.props.handleSelectRecord) {
+            this.props.handleSelectRecord(this.selectedRecords, this)
+        }
     }
-    // 07/31/2017
-    // update bulk action, remove this function from DataGrid
-    // new function locate at List
-    // ------------------------------------------------------------
-    // handleRowSelection = (selectedRows)=>{
-    //     if (selectedRows === 'all'){
-    //         this.selectedRecords = this.props.records
-    //     } else if (selectedRows === 'none') {
-    //         this.selectedRecords = []
-    //     }else{
-    //         this.selectedRecords = selectedRows.map((index)=>{
-    //             return this.props.records[index]
-    //         })
-    //     }
-    // }
-    // ------------------------------------------------------------
 
     render() {
-        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, enableSelectAll, allRowsSelected, multiSelectable, selectable, handleSelect} = this.props;
+        const { entityName, children, records, currentSort, styles = defaultStyles, rowStyle, enableSelectAll, allRowsSelected, multiSelectable, selectable } = this.props;
         return (
-            <Table style={styles.table} 
-            allRowsSelected={allRowsSelected}
-            selectable={selectable}
-            multiSelectable={multiSelectable}
-            onRowSelection={handleSelect}>
-                <TableHeader displaySelectAll={enableSelectAll&&multiSelectable} enableSelectAll={enableSelectAll} adjustForCheckbox={multiSelectable||selectable}>
+            <Table style={styles.table}
+                allRowsSelected={allRowsSelected}
+                selectable={selectable}
+                multiSelectable={multiSelectable}
+                onRowSelection={this.handleRowSelection}>
+                <TableHeader displaySelectAll={enableSelectAll && multiSelectable} enableSelectAll={enableSelectAll} adjustForCheckbox={multiSelectable || selectable}>
                     <TableRow style={styles.tr}>
                         {React.Children.map(children, (field, index) => (
                             <DataGridHeaderCell
@@ -127,7 +122,7 @@ class DataGrid extends Component {
                         ))}
                     </TableRow>
                 </TableHeader>
-                <TableBody style={styles.tbody} deselectOnClickaway={false} displayRowCheckbox={multiSelectable||selectable}>
+                <TableBody style={styles.tbody} deselectOnClickaway={false} displayRowCheckbox={multiSelectable || selectable}>
                     {records.map((record, rowIndex) => (
                         <TableRow style={rowStyle ? rowStyle(record, rowIndex) : styles.tr} key={record.id}>
                             {React.Children.map(children, (field, index) => (
@@ -148,7 +143,7 @@ class DataGrid extends Component {
 DataGrid.propTypes = {
     entityName: PropTypes.string,
     records: MobxTypes.arrayOrObservableArray.isRequired,
-    currentSort:PropTypes.string,
+    currentSort: PropTypes.string,
     setSort: PropTypes.func,
     styles: PropTypes.object,
     rowStyle: PropTypes.func,
@@ -158,7 +153,7 @@ DataGrid.propTypes = {
     allRowsSelected: PropTypes.bool,
     multiSelectable: PropTypes.bool,
     selectable: PropTypes.bool,
-
+    handleSelectRecord: PropTypes.func,
     // stripedRows: PropTypes.bool,
     // showRowHover: PropTypes.bool,
 };
@@ -175,8 +170,8 @@ DataGrid.defaultProps = {
     // stripedRows: false,
     // showRowHover: false,
 
-    rowStyle: function(record, index){
-        return index % 2 === 0 ? defaultStyles.tr : {...defaultStyles.tr, backgroundColor:'#eee'}
+    rowStyle: function (record, index) {
+        return index % 2 === 0 ? defaultStyles.tr : { ...defaultStyles.tr, backgroundColor: '#eee' }
     }
 };
 

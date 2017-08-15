@@ -22,15 +22,10 @@ class DeleteAllButton extends React.Component {
     handleDelete = () => {
         this.dialogOpened = false;
         const store = getStore(this.props.entityName)
-        const delLength = this.props.deleteRecords.length;
-        this.props.deleteRecords.map((record, index)=>{
-            store.delete(record.id).then(()=>{
-                if(index == delLength - 1){
-                    stores.notification.notify('Record deleted!')
-
-                    this.props.clearDeleteRecordsHandle();
-                }
-            })
+        Promise.all(this.props.deleteRecords.map((record, index)=>{
+            return store.delete(record.id)
+        })).then(()=>{
+            stores.notification.notify('Record deleted!')
         })
     }
     render() {
