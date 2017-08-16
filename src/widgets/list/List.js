@@ -40,7 +40,7 @@ export class List extends Component {
     }
 
     updateQuery(props) {
-        this.query = { ...(this.query || emptyQuery) }
+        this.query = { ...emptyQuery }
         const newQuery = props.query || {}
         for (const i in this.query) {
             if (newQuery[i] != null) {
@@ -79,11 +79,9 @@ export class List extends Component {
         this.loadReaction = reaction(() => store.records.map((record) => record.id), ids => this.loadData())
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.query != nextProps.query) {
-            this.loadData(nextProps);
-        } else if (this.props.entityName !== nextProps.entityName) {
-            this.loadData(nextProps)
-        }
+        this.updateQuery(nextProps)
+        this.syncQueryToUrl()
+        this.loadData(nextProps);
     }
     componentWillUnmount() {
         this.loadReaction()
