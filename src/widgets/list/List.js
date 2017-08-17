@@ -207,7 +207,7 @@ export class List extends Component {
         } else if (!this.records || this.records.length === 0) {
             node = <CardText>No data!</CardText>
         }
-        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, hasRefresh, title, children } = this.props
+        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, hasDelete, hasRefresh, title, children } = this.props
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
@@ -224,6 +224,7 @@ export class List extends Component {
                     searchValue: this.query.search,
                     deleteRecords: this.selectedRecords,
                     hasCreate,
+                    hasDelete,
                     shownFilters: this.state,
                     showFilter: this.showFilter,
                     refresh,
