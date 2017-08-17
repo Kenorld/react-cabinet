@@ -109,7 +109,11 @@ export class List extends Component {
         }
     }
     componentDidMount() {
-        this.collectQuery(this.props)
+        if (this.props.urlBinded) {
+            this.collectQuery(this.props)
+        } else {
+            this.updateQuery(this.props)
+        }
         this.loadData();
         const store = getStore(this.props.entityName)
         this.loadReaction = reaction(() => store.records.map((record) => record.id), ids => this.loadData())
