@@ -5,6 +5,8 @@ import { observer } from 'mobx-react'
 import TextField from 'material-ui/TextField';
 import { fetchValue, writeValue } from '../utils'
 
+import {validateInput} from '../validate'
+
 /**
  * An Input component for a string
  *
@@ -21,23 +23,30 @@ import { fetchValue, writeValue } from '../utils'
  */
 @observer
 class TextInput extends Component {
+    @validateInput
     handleChange = (event) => {
         this.props.writeValue(this, event.target.value)
         if (this.props.onChange) {
             this.props.onChange(event, this.props.source, event.target.value)
         }
+
+        
     }
 
+    @observable _errorText;
+    @observable _value = ''
     render() {
-        const { fetchValue, label, style, type, disabled} = this.props
+        const { fetchValue, label, style, type, disabled } = this.props
         return <TextField
             label={label}
             style={style}
             type={type}
             disabled={disabled}
-            value={fetchValue(this)}
-            onChange={this.handleChange}
+            value={this._value}
+            onChange={this.handleChange.bind(this)}
             floatingLabelText={<span>{label}</span>}
+
+            errorText={this._errorText || ''}
         />
     }
 }
@@ -53,7 +62,7 @@ TextInput.propTypes = {
     fetchValue: PropTypes.func,
     writeValue: PropTypes.func,
     type: PropTypes.string,
-    convert: PropTypes.oneOfType([PropTypes.func,PropTypes.object])
+    convert: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
 };
 
 TextInput.defaultProps = {
