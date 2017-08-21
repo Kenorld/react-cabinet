@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import { observable } from "mobx"
+import { observable, reaction } from "mobx"
 import { observer } from 'mobx-react'
 import TextField from 'material-ui/TextField';
 import { fetchValue, writeValue } from '../utils'
@@ -25,6 +25,12 @@ class EmailInput extends Component {
 
     componentDidMount() {
         this.value = fetchValue(this)
+        this.recordReaction = reaction(() => this.props.record, (record) => {
+            this.value = fetchValue(this)
+        })
+    }
+    componentWillUnmount(){
+        this.recordReaction()
     }
     handleChange = (event) => {
         this.value = event.target.value
@@ -38,7 +44,7 @@ class EmailInput extends Component {
     }
 
     render() {
-        const { fetchValue, label, style, type, disabled } = this.props
+        const { label, style, type, disabled } = this.props
         return <TextField
             label={label}
             style={style}
@@ -76,6 +82,7 @@ EmailInput.defaultProps = {
     writeValue: writeValue,
     convert: {
         fetch: function(value){
+            console.log("==============value:", value)
             return (value||['']).join(', ')
         },
         write: function(raw){

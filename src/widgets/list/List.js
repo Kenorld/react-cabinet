@@ -12,11 +12,36 @@ import DataGrid from './DataGrid'
 
 const { queryStore } = stores
 const emptyQuery = {
-    limit: 30,
+    limit: 20,
     skip: 0,
     sort: '',
     search: '',
     filter: {},
+}
+
+function isDeepEqual(props0, props1) {
+    if (props0 === props1) {
+        return true
+    }
+    if (typeof props0 === 'object' && typeof props1 === 'object') {
+        const checked = []
+        for (let f in props0) {
+            if (!isDeepEqual(props0[f], props1[f])) {
+                return false
+            }
+            checked.push(f)
+        }
+        for (let f in props1) {
+            if (!checked.includes(f)) {
+                if (!isDeepEqual(props0[f], props1[f])) {
+                    return false
+                }
+            }
+        }
+        return true
+    } else {
+        return props0 === props1
+    }
 }
 @observer
 export class List extends Component {
@@ -24,7 +49,8 @@ export class List extends Component {
         router: PropTypes.shape({
             history: PropTypes.shape({
                 push: PropTypes.func.isRequired,
-                replace: PropTypes.func.isRequired
+                replace: PropTypes.func.isRequired,
+                listen: PropTypes.func.isRequired,
             }).isRequired
         }).isRequired
     }
@@ -56,46 +82,75 @@ export class List extends Component {
         }
     }
     collectQuery(props) {
-        this.query = { ...emptyQuery, ...props.query }
         if (props.urlBinded) {
+            const query = { ...emptyQuery, ...props.query }
             const params = new URL(location.href).searchParams
             if (params) {
                 for (const i in this.query) {
                     if (params.has(i)) {
                         if (typeof emptyQuery[i] === 'string') {
-                            this.query[i] = params.get(i)
+                            query[i] = params.get(i)
                         } else {
-                            this.query[i] = JSON.parse(params.get(i))
+                            query[i] = JSON.parse(params.get(i))
                         }
                     }
                 }
             }
+            if (!isDeepEqual(query, this.query)) {
+                this.query = query
+                return true
+            }
+        }
+        return false
+    }
+    handleURLChange = () => {
+        if (this.collectQuery(this.props)) {
+            this.loadData();
         }
     }
     componentDidMount() {
-        this.collectQuery(this.props)
+        if (this.props.urlBinded) {
+            this.collectQuery(this.props)
+        } else {
+            this.updateQuery(this.props)
+        }
         this.loadData();
         const store = getStore(this.props.entityName)
         this.loadReaction = reaction(() => store.records.map((record) => record.id), ids => this.loadData())
+        if (this.props.urlBinded) {
+            this.historyUnlisten = this.context.router.history.listen(this.handleURLChange)
+        }
     }
     componentWillReceiveProps(nextProps) {
-        this.updateQuery(nextProps)
-        this.syncQueryToUrl()
-        this.loadData(nextProps);
+        if (this.props.entityName !== nextProps.entityName || !isDeepEqual(nextProps.query, this.props.query)) {
+            this.updateQuery(nextProps)
+            this.syncQueryToUrl()
+            this.loadData(nextProps.entityName);
+        }
+        if (!this.props.urlBinded && nextProps.urlBinded && !this.historyUnlisten) {
+            this.historyUnlisten = this.context.router.history.listen(this.handleURLChange)
+        } else if (this.props.urlBinded && !nextProps.urlBinded) {
+            this.historyUnlisten()
+            this.historyUnlisten = undefined
+        }
     }
     componentWillUnmount() {
         this.loadReaction()
+        if (this.historyUnlisten) {
+            this.historyUnlisten()
+            this.historyUnlisten = undefined
+        }
     }
 
     refresh = (event) => {
         event.stopPropagation();
         this.loadData();
     }
-    loadData = async (props = this.props) => {
-        if (!props.entityName) return
+    loadData = async (entityName = this.props.entityName) => {
+        if (!entityName) return
 
         const { limit, skip, sort, filter, search } = this.query;
-        const store = getStore(props.entityName)
+        const store = getStore(entityName)
         this.isLoading = true
         const data = await store.list(limit, skip, sort, filter, search)
         this.records = data.records
@@ -152,7 +207,7 @@ export class List extends Component {
         } else if (!this.records || this.records.length === 0) {
             node = <CardText>No data!</CardText>
         }
-        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, hasRefresh, title, children } = this.props
+        const { filters, pagination = <DefaultPagination />, actions = <DefaultActions />, entityName, hasCreate, hasDelete, hasRefresh, title, children } = this.props
         const filterValues = this.query.filter
         const defaultTitle = `${entityName} List`
         if (node == null) {
@@ -169,6 +224,7 @@ export class List extends Component {
                     searchValue: this.query.search,
                     deleteRecords: this.selectedRecords,
                     hasCreate,
+                    hasDelete,
                     shownFilters: this.state,
                     showFilter: this.showFilter,
                     refresh,
@@ -211,8 +267,7 @@ List.propTypes = {
 }
 List.defaultProps = {
     hasCreate: false,
-    hasRefresh: true,
-    query: { ...emptyQuery }
+    hasRefresh: true
 }
 
 export default List;
