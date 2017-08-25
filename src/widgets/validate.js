@@ -5,9 +5,12 @@ export function validateInput(target, key, descriptor) {
     const method = descriptor.initializer;
     descriptor.initializer = function () {
         return function (event) {
-            this.props.validators.map((validator, index) => {
-                check.apply(this, [validator, this.props.errorMessages[index], event.target.value]);
-            });
+            if(this.props.validators){
+                this.props.validators.map((validator, index) => {
+                    check.apply(this, [validator, this.props.errorMessages[index], event.target.value]);
+                });
+            }
+            
             this._value = event.target.value;
             method.apply(this)(event);
         }
