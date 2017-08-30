@@ -17,13 +17,13 @@ export function fetchValue(element, defaultValue = "") {
   if (element.props.convert) {
     if (element.props.convert.fetch) {
       value = element.props.convert.fetch.apply(element, values)
-    } else {
+    } else if (typeof element.props.convert === 'function'){
       value = element.props.convert.apply(element, values)
+    }else{
+      value = values.length == 1 ? values[0] : values.join(', ')
     }
-  }else if (values.length == 1){
-    value = values[0]
   }else{
-    value = values.join(', ')
+    value = values.length == 1 ? values[0] : values.join(', ')
   }
   return value
 }

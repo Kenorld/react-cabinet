@@ -5,7 +5,7 @@ export function validateInput(target, key, descriptor) {
     const method = descriptor.initializer;
     descriptor.initializer = function () {
         return function (event) {
-            if(this.props.validators){
+            if(this.props && this.props.validators){
                 this.props.validators.map((validator, index) => {
                     check.apply(this, [validator, this.props.errorMessages[index], event.target.value]);
                 });
@@ -24,7 +24,7 @@ export function validateForm(Form) {
             if (this.wci) {
                 let all_clear = true;
                 this.wci.map((child) => {
-                    if (child.props.validators) {
+                    if (child && child.props && child.props.validators) {
                         for (var i = 0, l = child.props.validators.length; i < l; i++) {
                             if (!check.apply(child, [child.props.validators[i], child.props.errorMessages[i], getValues(child.props.record, child.props.source)[0]])) {
                                 all_clear = false;
@@ -35,7 +35,7 @@ export function validateForm(Form) {
                 });
                 if (all_clear) {
                     console.log('all clear');
-                    this.props.onSubmit(data);
+                    this.props && this.props.onSubmit && this.props.onSubmit(data);
                 }
             }
         }

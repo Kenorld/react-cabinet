@@ -34,7 +34,6 @@ class TextInput extends Component {
     }
 
     @observable _errorText;
-    @observable _value = ''
     render() {
         const { fetchValue, label, style, type, disabled } = this.props
         return <TextField
@@ -42,7 +41,7 @@ class TextInput extends Component {
             style={style}
             type={type}
             disabled={disabled}
-            value={this._value}
+            value={fetchValue(this)}
             onChange={this.handleChange.bind(this)}
             floatingLabelText={<span>{label}</span>}
 

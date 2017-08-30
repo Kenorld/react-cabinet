@@ -35,7 +35,7 @@ class NumberInput extends Component {
     }
 
     render() {
-        const { label, fetchValue, step, style, disabled } = this.props;
+        const { label, fetchValue, step, style, disabled, min, max } = this.props;
         return (
             <TextField
                 disabled={disabled}
@@ -44,6 +44,8 @@ class NumberInput extends Component {
                 onChange={this.handleChange}
                 step={step}
                 type="number"
+                min={min}
+                max={max}
                 floatingLabelText={label}
             />
         );
