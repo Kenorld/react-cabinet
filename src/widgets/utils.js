@@ -30,7 +30,8 @@ export function fetchValue(element, defaultValue = "") {
 
 export function writeValue(element, value) {
   if (element.props.convert && element.props.convert.write) {
-    value = element.props.convert.write(value)
+    element.props.convert.write(value)
+  }else{
+    set(element.record || element.props.record, element.props.source, value)
   }
-  set(element.record || element.props.record, element.props.source, value)
 }
