@@ -29,8 +29,6 @@ class TextInput extends Component {
         if (this.props.onChange) {
             this.props.onChange(event, this.props.source, event.target.value)
         }
-
-        
     }
 
     @observable _errorText;
